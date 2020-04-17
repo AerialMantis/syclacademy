@@ -10,7 +10,8 @@
 
 # TODO(Gordon): Generalize this to support other implementations
 function(add_sycl_executable prefix source)
-	add_executable("${prefix}_${source}" "${source}.cpp")
+  add_executable("${prefix}_${source}" "${source}.cpp")
+  target_include_directories("${prefix}_${source}" PRIVATE ${PROJECT_SOURCE_DIR}/Utilities/include ${PROJECT_SOURCE_DIR}/External/stb)
   target_link_libraries("${prefix}_${source}" PRIVATE Threads::Threads)
 	target_link_libraries("${prefix}_${source}" PUBLIC Catch2::Catch2)
   set_target_properties("${prefix}_${source}" PROPERTIES CXX_STANDARD 17
@@ -28,3 +29,5 @@ add_subdirectory(Exercise_1_Getting_Started)
 add_subdirectory(Exercise_2_Configuring_a_Queue)
 add_subdirectory(Exercise_3_Hello_World)
 add_subdirectory(Exercise_4_Vector_Add)
+add_subdirectory(Exercise_5_Image_Grayscale)
+add_subdirectory(Exercise_6_matrix_Transpose)
