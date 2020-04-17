@@ -1,0 +1,73 @@
+#[[
+  SYCL Academy (c)
+
+  SYCL Academy is licensed under a Creative Commons Attribution-ShareAlike 4.0
+  International License.
+
+  You should have received a copy of the license along with this work.  If not,
+  see <http://creativecommons.org/licenses/by-sa/4.0/>.
+]]
+
+cmake_minimum_required (VERSION 3.7.2)
+project (SYCLAcademy)
+
+# Options
+
+option(SYCL_ACADEMY_USE_COMPUTECPP "Configure to compile with ComputeCpp" OFF)
+option(SYCL_ACADEMY_USE_DPCPP "Configure to compile with DPC++" OFF)
+option(SYCL_ACADEMY_USE_HIPSYCL "Configure to compile with hipSYCL" OFF)
+
+set(SYCL_IMPLEMENTATIONS_USED 0)
+if(SYCL_ACADEMY_USE_COMPUTECPP)
+  math(EXPR SYCL_IMPLEMENTATIONS_USED ${SYCL_IMPLEMENTATIONS_USED}+1)
+endif()
+if(SYCL_ACADEMY_USE_DPCPP)
+  math(EXPR SYCL_IMPLEMENTATIONS_USED ${SYCL_IMPLEMENTATIONS_USED}+1)
+endif()
+if(SYCL_ACADEMY_USE_HIPSYCL)
+  math(EXPR SYCL_IMPLEMENTATIONS_USED ${SYCL_IMPLEMENTATIONS_USED}+1)
+endif()
+if (${SYCL_IMPLEMENTATIONS_USED} EQUAL 0)
+  message(FATAL_ERROR "No SYCL implementation specified, please set either "
+  "SYCL_ACADEMY_USE_COMPUTECPP, SYCL_ACADEMY_USE_DPCPP or "
+  "SYCL_ACADEMY_USE_HIPSYCL to ON.")
+endif()
+if (${SYCL_IMPLEMENTATIONS_USED} GREATER 1)
+  message(FATAL_ERROR "Multiple SYCL implementations specified, please only "
+  "set one of SYCL_ACADEMY_USE_COMPUTECPP, SYCL_ACADEMY_USE_DPCPP or "
+  "SYCL_ACADEMY_USE_HIPSYCL to ON.")
+endif()
+
+# Common setup
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/Cmake")
+
+include_directories(${CMAKE_SOURCE_DIR}/external/catch2)
+
+find_package(Threads REQUIRED)
+
+# ComputeCpp setup
+
+if (SYCL_ACADEMY_USE_COMPUTECPP)
+  include(${CMAKE_MODULE_PATH}/ComputeCppCompilerChecks.cmake)
+  find_package(ComputeCpp REQUIRED)
+endif()
+
+# DPC++ setup
+
+if (SYCL_ACADEMY_USE_DPCPP)
+  # TODO(Gordon)
+endif()
+
+# hipSYCL setup
+
+if (SYCL_ACADEMY_USE_HIPSYCL)
+  # TODO(Gordon)
+endif()
+
+# Exercises
+
+enable_testing()
+
+add_subdirectory(Code_Exercises)
+
