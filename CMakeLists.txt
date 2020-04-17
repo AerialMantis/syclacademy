@@ -40,16 +40,15 @@ endif()
 
 # Common setup
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/Cmake")
-
-include_directories(${CMAKE_SOURCE_DIR}/external/catch2)
+list(APPEND CMAKE_MODULE_PATH
+  "${CMAKE_SOURCE_DIR}/External/computecpp-sdk/cmake/Modules/")
 
 find_package(Threads REQUIRED)
 
 # ComputeCpp setup
 
 if (SYCL_ACADEMY_USE_COMPUTECPP)
-  include(${CMAKE_MODULE_PATH}/ComputeCppCompilerChecks.cmake)
+  include(External/computecpp-sdk/cmake/Modules/ComputeCppCompilerChecks.cmake)
   find_package(ComputeCpp REQUIRED)
 endif()
 
@@ -68,6 +67,7 @@ endif()
 # Exercises
 
 enable_testing()
+add_subdirectory(External/Catch2)
 
 add_subdirectory(Code_Exercises)
 
