@@ -8,4 +8,5 @@
   see <http://creativecommons.org/licenses/by-sa/4.0/>.
 ]]
 
-add_sycl_executable(Sample hello_world)
+add_sycl_executable(Exercise_2 source)
+add_sycl_executable(Exercise_2 solution)

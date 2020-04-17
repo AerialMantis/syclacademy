@@ -23,5 +23,7 @@ function(add_sycl_executable prefix source)
     add_test(${source} ${source})
 endfunction()
 
-add_subdirectory(Sample)
 add_subdirectory(Exercise_1_Getting_Started)
+add_subdirectory(Exercise_2_Configuring_a_Queue)
+add_subdirectory(Exercise_3_Hello_World)
+add_subdirectory(Exercise_4_Vector_Add)
