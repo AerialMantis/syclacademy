@@ -11,9 +11,10 @@
 # TODO(Gordon): Generalize this to support other implementations
 function(add_sycl_executable prefix source)
   add_executable("${prefix}_${source}" "${source}.cpp")
-  target_include_directories("${prefix}_${source}" PRIVATE ${PROJECT_SOURCE_DIR}/Utilities/include ${PROJECT_SOURCE_DIR}/External/stb)
+  target_include_directories("${prefix}_${source}" PRIVATE
+    ${PROJECT_SOURCE_DIR}/Utilities/include ${PROJECT_SOURCE_DIR}/External/stb)
   target_link_libraries("${prefix}_${source}" PRIVATE Threads::Threads)
-	target_link_libraries("${prefix}_${source}" PUBLIC Catch2::Catch2)
+  target_link_libraries("${prefix}_${source}" PUBLIC Catch2::Catch2)
   set_target_properties("${prefix}_${source}" PROPERTIES CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON)
 
