@@ -9,7 +9,7 @@
 ]]
 
 # TODO(Gordon): Generalize this to support other implementations
-function(add_sycl_executable prefix source)
+function(add_sycl_executable_computecpp prefix source)
   add_executable("${prefix}_${source}" "${source}.cpp")
   target_include_directories("${prefix}_${source}" PRIVATE
     ${PROJECT_SOURCE_DIR}/Utilities/include ${PROJECT_SOURCE_DIR}/External/stb)
@@ -24,6 +24,24 @@ function(add_sycl_executable prefix source)
   )
     
   add_test(${source} ${source})
+endfunction()
+
+function(add_sycl_executable_dpcpp prefix source)
+  #TODO
+endfunction()
+
+function(add_sycl_executable_hipsycl prefix source)
+  #TODO
+endfunction()
+
+function(add_sycl_executable prefix source)
+  if (SYCL_ACADEMY_USE_COMPUTECPP)
+    add_sycl_executable_computecpp(prefix source)
+  elseif(SYCL_ACADEMY_USE_DPCPP)
+    add_sycl_executable_dpcpp(prefix source)
+  elseif(SYCL_ACADEMY_USE_HIPSYCL)
+    add_sycl_executable_hipsycl(prefix source)
+  endif()
 endfunction()
 
 add_subdirectory(Exercise_1_Getting_Started)

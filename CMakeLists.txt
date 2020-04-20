@@ -16,6 +16,8 @@ project (SYCLAcademy)
 option(SYCL_ACADEMY_USE_COMPUTECPP "Configure to compile with ComputeCpp" OFF)
 option(SYCL_ACADEMY_USE_DPCPP "Configure to compile with DPC++" OFF)
 option(SYCL_ACADEMY_USE_HIPSYCL "Configure to compile with hipSYCL" OFF)
+option(SYCL_ACADEMY_INSTALL_ROOT "Path to the root directory of the chosen "
+  "SYCL implementation" "NOT-FOUND")
 
 set(SYCL_IMPLEMENTATIONS_USED 0)
 if(SYCL_ACADEMY_USE_COMPUTECPP)
@@ -38,6 +40,12 @@ if (${SYCL_IMPLEMENTATIONS_USED} GREATER 1)
   "SYCL_ACADEMY_USE_HIPSYCL to ON.")
 endif()
 
+if (NOT SYCL_ACADEMY_INSTALL_ROOT)
+  message(FATAL_ERROR "SYCL implementation root not provided, please specify "
+    "the path to the root of the chosen SYCL implementation using "
+    "SYCL_ACADEMY_INSTALL_ROOT=<path/to/install/root>.")
+endif()
+
 # Common setup
 
 list(APPEND CMAKE_MODULE_PATH
@@ -50,6 +58,7 @@ add_subdirectory(Utilities)
 # ComputeCpp setup
 
 if (SYCL_ACADEMY_USE_COMPUTECPP)
+  set(ComputeCpp_DIR ${SYCL_ACADEMY_INSTALL_ROOT})
   include(External/computecpp-sdk/cmake/Modules/ComputeCppCompilerChecks.cmake)
   find_package(ComputeCpp REQUIRED)
 endif()
