@@ -13,6 +13,10 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
 
+#ifdef SYCL_ACADEMY_USING_COMPUTECPP
+#include <SYCL/experimental/usm_wrapper.h>
+#endif  // SYCL_ACADEMY_USING_COMPUTECPP
+
 #include <CL/sycl.hpp>
 
 #ifdef SYCL_ACADEMY_USING_COMPUTECPP
@@ -71,8 +75,9 @@ void parallel_add(std::vector<T> &inputA, std::vector<T> &inputB,
 
     usmQueue.submit([&](handler& cgh) {
 
-      cgh.parallel_for<add<T>>(range<1>(size), [=](id<1> i) {
-        outputPtr[i] = inputAPtr[i] + inputBPtr[i];
+      cgh.parallel_for<add<T>>(range<1>(size), [=](id<1> idx) {
+        auto index = idx[0];
+        outputPtr[index] = inputAPtr[index] + inputBPtr[index];
       });
 
     }).wait();
