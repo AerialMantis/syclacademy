@@ -68,9 +68,9 @@ void parallel_add(std::vector<T> &inputA, std::vector<T> &inputB,
   {
 // TODO(Gordon): Switch to usm_wrapper
 #ifdef SYCL_ACADEMY_USING_COMPUTECPP
-    usm_wrapper<T> inputAPtr = usm_wrapper<T>{ inputAPtr };
-    usm_wrapper<T> inputBPtr = usm_wrapper<T>{ inputBPtr };
-    usm_wrapper<T> outputPtr = usm_wrapper<T>{ outputPtr };
+    usm_wrapper<T> inputAPtr = usm_wrapper<T>{inputAPtr};
+    usm_wrapper<T> inputBPtr = usm_wrapper<T>{inputBPtr};
+    usm_wrapper<T> outputPtr = usm_wrapper<T>{outputPtr};
 #endif  // SYCL_ACADEMY_USING_COMPUTECPP
 
     usmQueue.submit([&](handler& cgh) {
