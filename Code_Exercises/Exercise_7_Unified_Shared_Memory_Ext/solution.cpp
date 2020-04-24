@@ -48,7 +48,7 @@ void parallel_add(std::vector<T> &inputA, std::vector<T> &inputB,
   using namespace cl::sycl::experimental;
 #endif  // SYCL_ACADEMY_USING_COMPUTECPP
 
-  assert(inputA.size() == inputB.size() && inputA.size() == output.size());
+  assert((inputA.size() == inputB.size()) && (inputA.size() == output.size()));
 
   const auto size = inputA.size();
   const auto sizeInBytes = size * sizeof(T);

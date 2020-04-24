@@ -71,5 +71,4 @@ TEST_CASE("transpose", "sycl_05_transpose") {
   outputMat.print();
 
   REQUIRE(true);
-
 }

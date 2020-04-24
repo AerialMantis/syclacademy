@@ -59,3 +59,4 @@ TEST_CASE("print_ids", "sycl_02_hello_world") {
 
   REQUIRE(true);
 }
+

@@ -11,9 +11,9 @@ In this first exercise you will learn:
 
 ---
 
-The [Intel extension for unified shared memory](https://github.com/intel/llvm/blob/sycl/sycl/doc/extensions/USM/USM.adoc) (USM) adds support for allocating and manipulating regions of unified shared memory in SYCL for devices which support it. This adds a new distinct memory model to SYCL along side the existing one which uses buffers and accessors.
+The [Intel extension for unified shared memory](https://github.com/intel/llvm/blob/sycl/sycl/doc/extensions/USM/USM.adoc) (USM) adds support for allocating and manipulating regions of unified shared memory in SYCL for devices which support it. This adds a new distinct memory model to SYCL alongside the existing one which uses buffers and accessors.
 
-There are various levels of USM which can be supported by a device, which provide varying levels of functionality. In this exercise we are going to focus on `Explicit USM`, which allows you to allocate a persistent pointer to a region of USM on the host or on a device and copy to and from it.
+There are various levels of USM which can be supported by a device, which provide varying levels of functionality. In this exercise we are going to focus on `Explicit USM`, which allows you to allocate a persistent pointer to a region of USM on the device and copy to and from it from the host application.
 
 However, USM does not provide any implicit data movement or data dependency analysis which you would ordinarily get with `accessors`, so any copies must be done manually by calling `memcpy` and dependencies must be manually defined using `events`.
 
@@ -29,7 +29,9 @@ Do this for both inputs and the output.
 
 3.) Copy the inputs
 
-Next you'll need to copy your input data to the USM memory regions you allocated for the inputs. You can do this by calling the `queue` meber function `memcpy`, which takes a destination pointer, source pointer and a size in bytes.
+Next you'll need to copy your input data to the USM memory regions you allocated for the inputs.
+
+You can do this by calling the `queue` member function `memcpy`, which takes a destination pointer, source pointer, and a size in bytes.
 
 Each of these will return an `event`, you should store this event to wait on it later.
 
@@ -65,7 +67,7 @@ To launch a kernel call the `parallel_for` member function of the `queue` and ca
 
 In the kernel itself use write a vector add operation that takes the value at the index of each input pointers, add them together and assign the result to the value at the index of the output pointer.
 
-The `parallel_for` function will also return an `event` so you should wait on that to wait for the kernel to complete before continuing.
+The `parallel_for` function will also return an `event` you can use to wait for the kernel to complete before continuing.
 
 7.) Copy the result back
 
