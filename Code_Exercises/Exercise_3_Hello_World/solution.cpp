@@ -20,14 +20,14 @@ TEST_CASE("hello_world", "sycl_02_hello_world") {
 
   cl::sycl::queue myQueue(selector);
   std::cout << "Running on "
-            << myQueue.get_device().get_info<cl::sycl::info::device::name>()
-            << "\n";
+    << myQueue.get_device().get_info<cl::sycl::info::device::name>()
+    << "\n";
 
   myQueue.submit([&](cl::sycl::handler& cgh) {
     cl::sycl::stream os(1024, 80, cgh);
 
     cgh.single_task<hello_world>([=]() { os << "Hello World!\n"; });
-  });
+    });
 
   myQueue.wait();
 
@@ -41,19 +41,19 @@ TEST_CASE("print_ids", "sycl_02_hello_world") {
 
   cl::sycl::queue myQueue(selector);
   std::cout << "Running on "
-            << myQueue.get_device().get_info<cl::sycl::info::device::name>()
-            << "\n";
+    << myQueue.get_device().get_info<cl::sycl::info::device::name>()
+    << "\n";
 
   myQueue.submit([&](cl::sycl::handler& cgh) {
     cl::sycl::stream os(1024, 80, cgh);
 
     cgh.parallel_for<print_ids>(cl::sycl::range<1>(1024),
-                                [=](cl::sycl::id<1> idx) {
-                                  if (idx[0] == 999) {
-                                    os << "I am on " << idx << "\n";
-                                  }
-                                });
-  });
+      [=](cl::sycl::id<1> idx) {
+        if (idx[0] == 999) {
+          os << "I am on " << idx << "\n";
+        }
+      });
+    });
 
   myQueue.wait();
 

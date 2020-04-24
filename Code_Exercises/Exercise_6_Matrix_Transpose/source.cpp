@@ -24,7 +24,7 @@ static constexpr int HEIGHT = 128;
 
 template <typename T, int W, int H>
 class matrix {
- public:
+public:
   void print() const noexcept {
     for (int r = 0; r < H; ++r) {
       for (int c = 0; c < W; ++c) {
@@ -35,11 +35,11 @@ class matrix {
     std::cout << "\n";
   }
 
-  T *data() noexcept { return data_; }
+  T* data() noexcept { return data_; }
 
-  T *begin() noexcept { return data_; }
+  T* begin() noexcept { return data_; }
 
-  T *end() noexcept { return &(data_[W * H]); }
+  T* end() noexcept { return &(data_[W * H]); }
 
   size_t size() const noexcept { return W * H; }
 
@@ -47,7 +47,7 @@ class matrix {
 
   size_t height() const noexcept { return H; }
 
- private:
+private:
   T data_[W * H];
 };
 

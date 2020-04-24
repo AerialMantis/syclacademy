@@ -19,8 +19,8 @@ template <typename T>
 class add;
 
 template <typename T>
-void parallel_add(std::vector<T> &inputA, std::vector<T> &inputB,
-                  std::vector<T> &output) {
+void parallel_add(std::vector<T>& inputA, std::vector<T>& inputB,
+  std::vector<T>& output) {
   using namespace cl::sycl;
 
   assert(inputA.size() == inputB.size() && inputA.size() == output.size());
@@ -33,15 +33,15 @@ void parallel_add(std::vector<T> &inputA, std::vector<T> &inputB,
   buffer<T, 1> inputBBuf(inputB.data(), range<1>(size));
   buffer<T, 1> outputBuf(output.data(), range<1>(size));
 
-  defaultQueue.submit([&](handler &cgh) {
+  defaultQueue.submit([&](handler& cgh) {
     auto inputAAcc = inputABuf.template get_access<access::mode::read>(cgh);
     auto inputBAcc = inputBBuf.template get_access<access::mode::read>(cgh);
     auto outputAcc = outputBuf.template get_access<access::mode::write>(cgh);
 
     cgh.parallel_for<add<T>>(range<1>(size), [=](id<1> i) {
       outputAcc[i] = inputAAcc[i] + inputBAcc[i];
+      });
     });
-  });
 }
 
 TEST_CASE("add_floats", "sycl_03_vector_add") {

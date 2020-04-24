@@ -15,19 +15,21 @@
 
 #ifdef SYCL_ACADEMY_USING_COMPUTECPP
 #include <SYCL/experimental/usm_wrapper.h>
-#endif  // SYCL_ACADEMY_USING_COMPUTECPP
-
 #include <CL/sycl.hpp>
-
-#ifdef SYCL_ACADEMY_USING_COMPUTECPP
 #include <SYCL/experimental.hpp>
+#define depends_on experimental_depends_on
+using namespace cl::sycl::experimental;
+#else  // SYCL_ACADEMY_USING_COMPUTECPP
+#include <CL/sycl.hpp>
 #endif  // SYCL_ACADEMY_USING_COMPUTECPP
 
 #include <numeric>
 
+using namespace cl::sycl;
+
 struct usm_device_selector : public cl::sycl::device_selector {
   int operator()(const cl::sycl::device& d) const override {
-    if (d.get_info<sycl::info::device::usm_device_allocations>()) {
+    if (d.get_info<info::device::usm_device_allocations>()) {
       return 1;
     }
     else {
@@ -40,20 +42,15 @@ template <typename T>
 class add;
 
 template <typename T>
-void parallel_add(std::vector<T> &inputA, std::vector<T> &inputB,
-                  std::vector<T> &output) {
-  using namespace cl::sycl;
-
-#ifdef SYCL_ACADEMY_USING_COMPUTECPP
-  using namespace cl::sycl::experimental;
-#endif  // SYCL_ACADEMY_USING_COMPUTECPP
+void parallel_add(std::vector<T>& inputA, std::vector<T>& inputB,
+  std::vector<T>& output) {
 
   assert((inputA.size() == inputB.size()) && (inputA.size() == output.size()));
 
   const auto size = inputA.size();
   const auto sizeInBytes = size * sizeof(T);
 
-  auto usmQueue = queue{usm_device_selector{}};
+  auto usmQueue = queue{ usm_device_selector{} };
 
   auto inputAPtr = malloc_device<T>(size, usmQueue);
   auto inputBPtr = malloc_device<T>(size, usmQueue);
@@ -63,24 +60,26 @@ void parallel_add(std::vector<T> &inputA, std::vector<T> &inputB,
   auto copyInputB = usmQueue.memcpy(inputBPtr, inputB.data(), sizeInBytes);
   auto fillOutput = usmQueue.fill(outputPtr, 0, size);
 
-  event::wait({copyInputA, copyInputB, fillOutput});
-
   {
-// TODO(Gordon): Switch to usm_wrapper
+    // TODO(Gordon): Switch to usm_wrapper
 #ifdef SYCL_ACADEMY_USING_COMPUTECPP
-    usm_wrapper<T> inputAPtr = usm_wrapper<T>{inputAPtr};
-    usm_wrapper<T> inputBPtr = usm_wrapper<T>{inputBPtr};
-    usm_wrapper<T> outputPtr = usm_wrapper<T>{outputPtr};
+    usm_wrapper<T> inputAPtr = usm_wrapper<T>{ inputAPtr };
+    usm_wrapper<T> inputBPtr = usm_wrapper<T>{ inputBPtr };
+    usm_wrapper<T> outputPtr = usm_wrapper<T>{ outputPtr };
 #endif  // SYCL_ACADEMY_USING_COMPUTECPP
 
     usmQueue.submit([&](handler& cgh) {
 
+      cgh.depends_on(copyInputA);
+      cgh.depends_on(copyInputB);
+      cgh.depends_on(fillOutput);
+
       cgh.parallel_for<add<T>>(range<1>(size), [=](id<1> idx) {
         auto index = idx[0];
         outputPtr[index] = inputAPtr[index] + inputBPtr[index];
-      });
+        });
 
-    }).wait();
+      }).wait();
   }
 
   usmQueue.memcpy(output.data(), outputPtr, sizeInBytes).wait();

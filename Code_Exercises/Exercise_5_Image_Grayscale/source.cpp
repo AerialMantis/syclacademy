@@ -24,14 +24,14 @@ TEST_CASE("grayscale", "sycl_04_grayscale") {
   int width, height, channels;
 
   auto inputFile =
-      std::string("<path-to-repo>/cppcon-parallelism-class/resources/dogs.png");
+    std::string("<path-to-repo>/cppcon-parallelism-class/resources/dogs.png");
   auto outputFile = std::string(
-      "<path-to-repo>/cppcon-parallelism-class/resources/"
-      "dogs_grayscale."
-      "png");
+    "<path-to-repo>/cppcon-parallelism-class/resources/"
+    "dogs_grayscale."
+    "png");
 
-  unsigned char *rawInputData =
-      stbi_load(inputFile.c_str(), &width, &height, &channels, 4);
+  unsigned char* rawInputData =
+    stbi_load(inputFile.c_str(), &width, &height, &channels, 4);
 
   auto size = width * height * channels;
 
@@ -47,7 +47,7 @@ TEST_CASE("grayscale", "sycl_04_grayscale") {
 
   // ...
 
-  unsigned char *rawOutputData = new unsigned char[size];
+  unsigned char* rawOutputData = new unsigned char[size];
   for (int i = 0; i < (size); ++i) {
     rawOutputData[i] = static_cast<unsigned char>(imageData[i]);
   }
