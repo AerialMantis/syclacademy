@@ -120,7 +120,7 @@ implementation you are wishing to build for.
 * An appropriate build system for the platform you are targeting (CMake, Ninja,
 Make, Visual Studio).
 
-### Configuring using CMake
+### Configuring using CMake (ComputeCpp CE and hipSYCL only)
 
 Clone this repository, there are some additional dependencies configured as git
 sub-modules so make sure to clone those as well. Then simply invoke CMake as
@@ -143,7 +143,6 @@ For `<cmake_generator>` / `<cmake_arch>` we recommend:
 For `sycl_implementation` this can be one of:
 
 * `SYCL_ACADEMY_USE_COMPUTECPP`
-* `SYCL_ACADEMY_USE_DPCPP`
 * `SYCL_ACADEMY_USE_HIPSYCL`
 
 You can also specify the additional optional options:
@@ -174,6 +173,10 @@ installed as root or sudo and `~/intel/inteloneapi/` otherwise.
 or
 
 `source ~/intel/inteloneapi/setvars.sh`
+
+Once that's done you can invoke the DPC++ compiler as follows:
+
+`dpcpp -o a.out source.cpp`
 
 ## Online Interactive Tutorial
 

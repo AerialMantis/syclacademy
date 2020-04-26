@@ -27,11 +27,7 @@ function(add_sycl_executable_computecpp prefix source)
 endfunction()
 
 function(add_sycl_executable_dpcpp prefix source)
-  set(DPCPP_COMMAND "dpcpp -I${PROJECT_SOURCE_DIR}/External/catch2/"
-    "single_include ${source}.cpp")
-  add_custom_target("${prefix}_${source}" COMMAND ${DPCPP_COMMAND} SOURCES "${source}.cpp")
-
-  add_test(${prefix}_${source} ${prefix}_${source})
+  # Not implemented
 endfunction()
 
 # Note: This is copy-pasted from the ComputeCpp function,
@@ -68,14 +64,14 @@ add_subdirectory(Exercise_2_Configuring_a_Queue)
 add_subdirectory(Exercise_3_Hello_World)
 add_subdirectory(Exercise_4_Vector_Add)
 
-# Only include Grayscale exercise when using ComputeCpp or DPC++
-if(SYCL_ACADEMY_USE_COMPUTECPP OR SYCL_ACADEMY_USE_DPCPP)
+# Only include Grayscale exercise when using ComputeCpp
+if(SYCL_ACADEMY_USE_COMPUTECPP)
 add_subdirectory(Exercise_5_Image_Grayscale)
 endif()
 
 add_subdirectory(Exercise_6_Matrix_Transpose)
 
-# Only include USM exercise when using ComputeCpp or DPC++
-if(SYCL_ACADEMY_USE_COMPUTECPP OR SYCL_ACADEMY_USE_DPCPP)
+# Only include USM exercise when using ComputeCpp
+if(SYCL_ACADEMY_USE_COMPUTECPP)
   add_subdirectory(Exercise_7_Unified_Shared_Memory_Ext)
 endif()
