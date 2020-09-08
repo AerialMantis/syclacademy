@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+
+<html>
+	<head>
+	    <meta charset="utf-8">
+		<link rel="stylesheet" href="../common-revealjs/css/reveal.css">
+		<link rel="stylesheet" href="../common-revealjs/css/theme/white.css">
+		<link rel="stylesheet" href="../common-revealjs/css/custom.css">
+		<script>
+			// This is needed when printing the slides to pdf
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+		<script>
+		    // This is used to display the static images on each slide,
+			// See global-images in this html file and custom.css
+			(function() {
+				if(window.addEventListener) {
+					window.addEventListener('load', () => {
+						let slides = document.getElementsByClassName("slide-background");
+
+						if (slides.length === 0) {
+							slides = document.getElementsByClassName("pdf-page")
+						}
+
+						// Insert global images on each slide
+						for(let i = 0, max = slides.length; i < max; i++) {
+							let cln = document.getElementById("global-images").cloneNode(true);
+							cln.removeAttribute("id");
+							slides[i].appendChild(cln);
+						}
+
+						// Remove top level global images
+						let elem = document.getElementById("global-images");
+						elem.parentElement.removeChild(elem);
+					}, false);
+				}
+			})();
+		</script>
+		
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<div id="global-images" class="global-images">
+					<img src="../common-revealjs/images/sycl_academy.png" />
+					<img src="../common-revealjs/images/sycl_logo.png" />
+					<img src="../common-revealjs/images/trademarks.png" />
+					<img src="../common-revealjs/images/codeplay.png" />
+				</div>
+				<!--Slide 1-->
+				<section class="hbox">
+					<div class="hbox" data-markdown>
+						## Multiple Devices
+					</div>
+				</section>
+				<!--Slide 2-->
+				<section class="hbox" data-markdown>
+					## Learning Objectives
+					* Learn about contexts and what they are used for
+					* Learn about how create dependencies across devices
+					* Learn about moving data between devices
+                </section>
+				<!--Slide 3-->
+				<section class="hbox" data-markdown>
+					## What is a SYCL Queue
+				</section>
+				<!--Slide 4-->
+				<section>
+					<div class="container">
+						<div class="col-left-1" data-markdown>
+							![Queue](../common-revealjs/images/queue-1.png "SYCL-Queue")
+						</div>
+						<div class="col-right-1" data-markdown>
+							* In SYCL the underlying execution and memory resources of a platform and its devices is managed by creating a context
+							* A context represents one or more devices, but all devices must be associated with the same platform
+						</div>
+					</div>
+				</section>
+				<!--Slide 5-->
+				<section>
+					<div class="container">
+						<div class="col-left-1" data-markdown>
+							![Queue](../common-revealjs/images/queue-2.png "SYCL-Queue")
+						</div>
+						<div class="col-right-1" data-markdown>
+							* In SYCL the object which is used to submit work is the queue
+							* A queue processes command groups and submits commands to the SYCL scheduler for a particular context and device
+							
+						</div>
+					</div>
+				</section>
+				<!--Slide 6-->
+				<section>
+					<div class="container">
+						<div class="col-left-1" data-markdown>
+							![Queue](../common-revealjs/images/queue-3.png "SYCL-Queue")
+						</div>
+						<div class="col-right-1" data-markdown>
+							* A single SYCL application will often want to target multiple different devices
+							* This can be useful for task level parallelism and load balancing
+						</div>
+					</div>
+				</section>
+				<!--Slide 7-->
+				<section class="hbox" data-markdown>
+				    ## Creating a Queue
+				</section>
+				<!--Slide 8-->
+				<section>
+					<div class="container">
+						<div class="col-left-1">
+							<code><pre>
+auto defaultQueue = queue{};
+
+							</code></pre>
+						</div>
+						<div class="col-right-1" data-markdown>
+						    ![SYCL](../common-revealjs/images/queue-4.png "SYCL-Queue")
+						</div>
+					</div>
+					<div class="smaller-size-font" data-markdown>
+							* A default constructed queue object will use the **default_selector** to choose a device and create an implicit context
+					</div>
+				</section>
+				<!--Slide 9-->
+				<section>
+					<div class="container">
+						<div class="col-left-1">
+							<code><pre>
+auto intelGPUSelector = intel_gpu_selector{};
+auto intelGPUQeuue = queue{intelGPUSelector};
+
+							</code></pre>
+						</div>
+						<div class="col-right-1" data-markdown>
+						    ![SYCL](../common-revealjs/images/queue-4.png "SYCL-Queue")
+						</div>
+					</div>
+					<div class="smaller-size-font" data-markdown>
+							* A queue object can be constructed from a device selector which is used to choose a device and create an implicit context
+					</div>
+				</section>
+				<!--Slide 10-->
+				<section>
+					<div class="hbox" data-markdown>
+						## Questions
+					</div>
+				</section>
+				<!--Slide 11-->
+				<section>
+					<div class="hbox" data-markdown>
+						#### Exercise
+					</div>
+					<div class="container" data-markdown>
+						Code_Exercises/Exercise_13_Multiple_Devices/source
+					</div>
+					<div class="container" data-markdown>
+						Write a SYCL application that creates two queues targeting different devices and enqueue a kernel to both of them.
+					</div>
+				</section>
+			</div>
+		</div>
+		<script src="../common-revealjs/js/reveal.js"></script>
+		<script src="../common-revealjs/plugin/markdown/marked.js"></script>
+		<script src="../common-revealjs/plugin/markdown/markdown.js"></script>
+		<script src="../common-revealjs/plugin/notes/notes.js"></script>
+		<script>
+			Reveal.initialize({mouseWheel: true, defaultNotes: true});
+			Reveal.configure({ slideNumber: true });
+		</script>
+	</body>
+</html>
