@@ -162,15 +162,11 @@ inline constexpr filter_type filterType = filter_type::blur;
 inline constexpr int filterWidth = 11;
 inline constexpr int halo = filterWidth / 2;
 
-TEST_CASE("image_convolution", "image_convolution_reference") {
+TEST_CASE("image_convolution_naive", "image_convolution_reference") {
   const char* inputImageFile =
-      "C:/Work/repos/syclacademy/Code_Exercises/"
-      "Exercise_15_Image_Convolution/"
-      "dogs.png";
+      "../Code_Exercises/Images/dogs.png";
   const char* outputImageFile =
-      "C:/Work/repos/syclacademy/Code_Exercises/"
-      "Exercise_15_Image_Convolution/"
-      "dogs_blurred.png";
+      "../Code_Exercises/Images/blurred_dogs.png";
 
   auto inputImage = read_image(inputImageFile, halo);
 

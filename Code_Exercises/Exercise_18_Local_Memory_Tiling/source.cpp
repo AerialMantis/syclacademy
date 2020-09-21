@@ -11,6 +11,6 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
 
-TEST_CASE("local_memory_tiling", "local_memory_tiling_source") {
+TEST_CASE("image_convolution_tiled", "local_memory_tiling_source") {
   REQUIRE(true);
 }

@@ -11,6 +11,6 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
 
-TEST_CASE("vector_load_and_store", "vector_load_and_store_source") {
+TEST_CASE("image_convolution_vectorized", "vectors_source") {
   REQUIRE(true);
 }

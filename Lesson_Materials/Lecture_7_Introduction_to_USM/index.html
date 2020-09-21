@@ -182,10 +182,31 @@
 				<!--Slide 11-->
 				<section>
 					<div class="hbox" data-markdown>
-						## Questions
+						#### Buffer/accessor vs USM
+					</div>
+					<div class="container" data-markdown>
+						So when should you use the accessor/buffer mode and
+						when should you use the USM model?
+					</div>
+					<div class="container" data-markdown>
+						* The **buffer/accessor** provides guaranteed
+						consistency and automatically manages dependencies.
+						  * Recommended when you need to iterate over or
+						  prototype your application.
+						  design of your application.
+						* The **USM** model provides a lower-level pointer-based
+						solution with fine grained control.
+						  * Recommended when porting existing C++ applications
+						  or using pointer-based structures.
 					</div>
 				</section>
 				<!--Slide 12-->
+				<section>
+					<div class="hbox" data-markdown>
+						## Questions
+					</div>
+				</section>
+				<!--Slide 13-->
 				<section>
 					<div class="hbox" data-markdown>
 						#### Exercise
@@ -195,9 +216,6 @@
 					</div>
 					<div class="container" data-markdown>
 						Implement a device selector that chooses a device in your system which supports explicit USM and device allocations.
-					</div>
-					<div class="container" data-markdown>
-						This can be checked by querying a `device` for the `usm_device_allocations` `aspect`.
 					</div>
 				</section>
 			</div>

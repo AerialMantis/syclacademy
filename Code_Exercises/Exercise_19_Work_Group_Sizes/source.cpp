@@ -11,6 +11,6 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
 
-TEST_CASE("work_group_sizes", "work_group_sizes_source") {
+TEST_CASE("image_convolution_work_group_sizes", "work_group_sizes_source") {
   REQUIRE(true);
 }

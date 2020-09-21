@@ -21,8 +21,6 @@
 
 #include <benchmark.h>
 
-#define SYCL_LANGUAGE_VERSION 2020
-
 #include <SYCL/sycl.hpp>
 
 enum class filter_type {
@@ -164,15 +162,11 @@ inline constexpr filter_type filterType = filter_type::blur;
 inline constexpr int filterWidth = 11;
 inline constexpr int halo = filterWidth / 2;
 
-TEST_CASE("image_convolution", "image_convolution_reference") {
+TEST_CASE("image_convolution_vectorized", "vectors_solution") {
   const char* inputImageFile =
-      "C:/Work/repos/syclacademy/Code_Exercises/"
-      "Exercise_15_Image_Convolution/"
-      "dogs.png";
+      "../Code_Exercises/Images/dogs.png";
   const char* outputImageFile =
-      "C:/Work/repos/syclacademy/Code_Exercises/"
-      "Exercise_15_Image_Convolution/"
-      "dogs_blurred.png";
+      "../Code_Exercises/Images/blurred_dogs.png";
 
   auto inputImage = read_image(inputImageFile, halo);
 
@@ -182,97 +176,82 @@ TEST_CASE("image_convolution", "image_convolution_reference") {
   auto filter = generate_filter(filter_type::blur, filterWidth);
 
   try {
-    sycl::queue myQueue(sycl::gpu_selector_v,
+    sycl::queue myQueue{sycl::gpu_selector_v,
                         [](sycl::exception_list exceptionList) {
                           for (auto e : exceptionList) {
                             std::rethrow_exception(e);
                           }
-                        });
+                        }};
 
     std::cout << "Running on "
               << myQueue.get_device().get_info<sycl::info::device::name>()
               << "\n";
 
-    auto globalRange = sycl::range<2>(inputImage.width(), inputImage.height());
-    auto localRange = sycl::range<2>(32, 1);
+    auto inputImgWidth = inputImage.width();
+    auto inputImgHeight = inputImage.height();
+    auto channels = inputImage.channels();
+    auto filterWidth = filter.width();
+    auto halo = filter.half_width();
 
-    auto inputBufferRange =
-        sycl::range<2>(inputImage.height() + (filter.half_width() * 2),
-                       (inputImage.width() + (filter.half_width() * 2)) *
-                           inputImage.channels());
-    auto outputBufferRange = sycl::range<2>(
-        inputImage.height(), inputImage.width() * inputImage.channels());
-    auto kernelRange =
-        sycl::range<2>(filter.width(), filter.width() * inputImage.channels());
+    auto globalRange = sycl::range(inputImgWidth, inputImgHeight);
+    auto localRange = sycl::range(32, 1);
+    auto ndRange = sycl::nd_range(globalRange, localRange);
+
+    auto inBufRange = (inputImgWidth + (halo * 2)) * sycl::range(1, channels);
+    auto outBufRange = inputImgHeight * sycl::range(1, channels);
+    auto filterRange = filterWidth * sycl::range(1, channels);
 
     {
-      auto inputBuffer =
-          sycl::buffer<float, 2>(inputImage.data(), inputBufferRange);
-      auto kernelBuffer = sycl::buffer<float, 2>(filter.data(), kernelRange);
-      auto outputBuffer = sycl::buffer<float, 2>(outputBufferRange);
-      outputBuffer.set_final_data(outputImage.data());
+      auto inBuf = sycl::buffer{inputImage.data(), inBufRange};
+      auto outBuf = sycl::buffer<float, 2>{outBufRange};
+      auto filterBuf = sycl::buffer{filter.data(), filterRange};
+      outBuf.set_final_data(outputImage.data());
 
-      int channels = inputImage.channels();
-      int filterWidth = filter.width();
-      int filterHalfWidth = filter.half_width();
+      auto inBufVec = inBuf.reinterpret<sycl::float4>(inBufRange /
+                                                      sycl::range(1, channels));
+      auto outBufVec = outBuf.reinterpret<sycl::float4>(
+          outBufRange / sycl::range(1, channels));
+      auto filterBufVec = filterBuf.reinterpret<sycl::float4>(
+          filterRange / sycl::range(1, channels));
 
       util::benchmark(
           [&]() {
             myQueue.submit([&](sycl::handler& cgh) {
               auto inputAcc =
-                  inputBuffer.get_access<sycl::access::mode::read>(cgh);
-              auto kernelAcc =
-                  kernelBuffer.get_access<sycl::access::mode::read>(cgh);
+                  inBufVec.get_access<sycl::access::mode::read>(cgh);
               auto outputAcc =
-                  outputBuffer.get_access<sycl::access::mode::write>(cgh);
+                  outBufVec.get_access<sycl::access::mode::write>(cgh);
+              auto filterAcc =
+                  filterBufVec.get_access<sycl::access::mode::read>(cgh);
 
               cgh.parallel_for<image_convolution>(
-                  sycl::nd_range<2>(globalRange, localRange),
-                  [=](sycl::nd_item<2> item) {
-                    auto globalId = sycl::id<2>(item.get_global_id(1),
-                                                item.get_global_id(0));
+                  ndRange, [=](sycl::nd_item<2> item) {
+                    auto globalId = item.get_global_id();
+                    globalId = sycl::id{globalId[1], globalId[0]};
 
-                    auto channelsStride = sycl::range<2>(1, channels);
+                    auto haloOffset = sycl::id(halo, halo);
+                    auto src = (globalId + haloOffset);
+                    auto dest = globalId;
 
-                    auto src = (globalId +
-                                sycl::id<2>(filterHalfWidth, filterHalfWidth)) *
-                               channelsStride;
-                    auto dest = globalId * channelsStride;
-
-                    sycl::id<2> fIndex;
-                    float sumR = 0.0;
-                    float sumG = 0.0;
-                    float sumB = 0.0;
-                    float sumA = 0.0;
+                    auto sum = sycl::float4{0.0f, 0.0f, 0.0f, 0.0f};
 
                     for (int r = 0; r < filterWidth; ++r) {
                       for (int c = 0; c < filterWidth; ++c) {
-                        auto srcOffset = sycl::id<2>(
-                            src[0] + (r - filterHalfWidth),
-                            src[1] + ((c - filterHalfWidth) * channels));
+                        auto srcOffset = sycl::id(src[0] + (r - halo),
+                                                  src[1] + ((c - halo)));
+                        auto filterOffset = sycl::id(r, c);
 
-                        auto filterOffset = sycl::id<2>(r, c * channels);
-
-                        sumR += inputAcc[srcOffset] * kernelAcc[filterOffset];
-                        sumG += inputAcc[srcOffset + sycl::id<2>(0, 1)] *
-                                kernelAcc[filterOffset + sycl::id<2>(0, 1)];
-                        sumB += inputAcc[srcOffset + sycl::id<2>(0, 2)] *
-                                kernelAcc[filterOffset + sycl::id<2>(0, 2)];
-                        sumA += inputAcc[srcOffset + sycl::id<2>(0, 3)] *
-                                kernelAcc[filterOffset + sycl::id<2>(0, 3)];
+                        sum += inputAcc[srcOffset] * filterAcc[filterOffset];
                       }
                     }
 
-                    outputAcc[dest] = sumR;
-                    outputAcc[dest + sycl::id<2>(0, 1)] = sumG;
-                    outputAcc[dest + sycl::id<2>(0, 2)] = sumB;
-                    outputAcc[dest + sycl::id<2>(0, 3)] = sumA;
+                    outputAcc[dest] = sum;
                   });
             });
 
             myQueue.wait_and_throw();
           },
-          100, "image convolution");
+          100, "image convolution (vectorized)");
     }
   } catch (sycl::exception e) {
     std::cout << "Exception caught: " << e.what() << std::endl;

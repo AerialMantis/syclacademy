@@ -144,6 +144,57 @@ auto intelGPUQeuue = queue{intelGPUSelector};
 							* A queue object can be constructed from a device selector which is used to choose a device and create an implicit context
 					</div>
 				</section>
+				<!--Slide 11-->
+				<section>
+					<div class="container">
+						<div class="col" data-markdown>
+							* If a buffer is accessed on one device when the latest copy of the data is on another device, the data will be copied
+							* If the two devices are of the same context the data can be copied directly
+						</div>
+						<div class="col" data-markdown>
+							![Buffer Copied](../common-revealjs/images/buffer-copied.png "Buffer Copied")
+						</div>
+					</div>
+				</section>
+				<!--Slide 12-->
+				<section>
+					<div class="container">
+						<div class="col" data-markdown>
+							* If the devices are of different contexts the data must be copied via host memory
+							* It's important to consider this as it could incur further overhead when copying between devices
+						</div>
+						<div class="col" data-markdown>
+							![Buffer Copied](../common-revealjs/images/copy-via-host.png "Buffer Copied")
+						</div>
+					</div>
+				</section>
+				<!--Slide 13-->
+				<section>
+					<div class="hbox" data-markdown>
+						#### Moving between devices (buffer/accessor)
+					</div>
+					<div class="container" data-markdown>
+						* Often in heterogeneous applications it's necessary to move data from one device to another.
+						* In the USM model this is done explicit via `memcpy` as we've seen before.
+						* In the buffer/accessor model this is done automatically based on dependency analysis.
+					</div>
+				</section>
+				<!--Slide 14-->
+				<section>
+					<div class="hbox" data-markdown>
+						#### Moving between devices (buffer/accessor)
+					</div>
+					<div class="container">
+						<div class="col" data-markdown>
+							![SYCL](./moving_data_between_devices.png "SYCL")
+						</div>
+						<div class="col" data-markdown>
+							* If a `buffer` is accessed by kernel functions in two different devices commands are enqueued to automatically move the data to the devices it is being accessed on.
+							* If both of those devices are associated with the same context (i.e. same vendor) then the copy is direct.
+							* Otherwise the copy will generally go via the host and has additional overhead.
+						</div>
+					</div>
+				</section>
 				<!--Slide 10-->
 				<section>
 					<div class="hbox" data-markdown>
@@ -159,7 +210,8 @@ auto intelGPUQeuue = queue{intelGPUSelector};
 						Code_Exercises/Exercise_13_Multiple_Devices/source
 					</div>
 					<div class="container" data-markdown>
-						Write a SYCL application that creates two queues targeting different devices and enqueue a kernel to both of them.
+						Write a SYCL application that splits up a task between
+						two devices.
 					</div>
 				</section>
 			</div>

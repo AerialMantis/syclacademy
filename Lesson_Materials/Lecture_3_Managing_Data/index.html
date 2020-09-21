@@ -59,19 +59,16 @@
 				<section class="hbox" data-markdown>
 					## Learning Objectives
 					* Learn about the buffer/accessor model for managing data
-					* Learn how to use buffers and Accessors
+					* Learn how to use buffers and accessors
 					* Learn how to access data in a kernel function
 					* Learn how a buffer synchronizes data
 				</section>
 				<!--Slide 3-->
 				<section>
 					<div class="hbox" data-markdown>
-						## SYCL Buffers & Accessors
+						#### SYCL Buffers & Accessors
 					</div>
-				</section>
-				<!--Slide 4-->
-				<section>
-					<div class="hbox" data-markdown>
+					<div class="container" data-markdown>
 						* SYCL separates the storage and access of data 
 						  * A SYCL buffer manages data across the host and any number of devices 
 						  * A SYCL accessor requests access to data on the host or on a device for a specific SYCL kernel function
@@ -79,33 +76,11 @@
 						  * This means they are declared in the host code but captured by and then accessed within a SYCL kernel function
 					</div>
 				</section>
-				<!--Slide 5-->
+				<!--Slide 4-->
 				<section>
-					<div class="container">
-						<div class="col-left-3">
-							<code><pre>
-buffer&ltfloat, 1&gt bufA(dA.data(), range&lt1&gt(dA.size())); 
-buffer&ltfloat, 1&gt bufB(dB.data(), range&lt1&gt(dB.size())); 
-buffer&ltfloat, 1&gt bufO(dO.data(), range&lt1&gt(dO.size()));
-
-gpuQueue.submit([&](handler &cgh){
-  <mark>auto inA = bufA.get_access&ltaccess::mode::read&gt(cgh);</mark>
-  <mark>auto inB = bufB.get_access&ltaccess::mode::read&gt(cgh);</mark>
-  <mark>auto out = bufO.get_access&ltaccess::mode::write&gt(cgh);</mark>
-  cgh.parallel_for&ltadd&gt(range&lt1&gt(dA.size()), 
-    [=](id&lt1&gt i){ out[i] = inA[i] + inB[i]; }); 
-});
-							</code></pre>
-						</div>
-						<div class="col-right-2" data-markdown>
-							* In order to achieve this the host compiler and the SYCL device compiler interpret accessors differently
-							* The host compiler interprets accessors as host objects which instruct the SYCL runtime of data dependencies for a SYCL kernel function
-							* The SYCL device compiler interprets accessors as a wrapper on the argument to the SYCL kernel function (a pointer to device memory) that is used to access data on the device
-						</div>
+					<div class="hbox" data-markdown>
+						#### SYCL Buffers & Accessors
 					</div>
-				</section>
-				<!--Slide 6-->
-				<section>
 					<div class="container">
 						<div class="col" data-markdown>
 							* A SYCL buffer can be constructed with a pointer to host memory
@@ -118,8 +93,11 @@ gpuQueue.submit([&](handler &cgh){
 						</div>
 					</div>
 				</section>
-				<!--Slide 7-->
+				<!--Slide 5-->
 				<section>
+					<div class="hbox" data-markdown>
+						#### SYCL Buffers & Accessors
+					</div>
 					<div class="container">
 						<div class="col" data-markdown>
 							* Constructing an accessor specifies a request to access the data managed by the buffer
@@ -130,8 +108,11 @@ gpuQueue.submit([&](handler &cgh){
 						</div>
 					</div>
 				</section>
-				<!--Slide 8-->
+				<!--Slide 6-->
 				<section>
+					<div class="hbox" data-markdown>
+						#### SYCL Buffers & Accessors
+					</div>
 					<div class="container">
 						<div class="col" data-markdown>
 							* When an accessor is constructed it is associated with a command group via the handler object
@@ -142,8 +123,11 @@ gpuQueue.submit([&](handler &cgh){
 						</div>
 					</div>
 				</section>
-				<!--Slide 9-->
+				<!--Slide 7-->
 				<section>
+					<div class="hbox" data-markdown>
+						#### SYCL Buffers & Accessors
+					</div>
 					<div class="container">
 						<div class="col" data-markdown>
 							* Once the SYCL scheduler selects the command group to be executed it must first satisfy its data dependencies
@@ -155,8 +139,11 @@ gpuQueue.submit([&](handler &cgh){
 						</div>
 					</div>
 				</section>
-				<!--Slide 10-->
+				<!--Slide 8-->
 				<section>
+					<div class="hbox" data-markdown>
+						#### SYCL Buffers & Accessors
+					</div>
 					<div class="container">
 						<div class="col" data-markdown>
 							* Data will remain in device memory after kernels finish executing until another command group requests access in a different device or on the host
@@ -167,145 +154,194 @@ gpuQueue.submit([&](handler &cgh){
 						</div>
 					</div>
 				</section>
+				<!--Slide 9-->
+				<section>
+					<div class="hbox" data-markdown>
+						#### Buffer class
+					</div>
+					<div class="container">
+						<code class="code-100pc"><pre>
+template &lt;typename dataT, int dimensions&gt;
+buffer;
+						</code></pre>
+					</div>
+					<div class="container" data-markdown>
+						* A `buffer` manages data across the host application
+						and kernel functions executing on device(s).
+						* It has a typename which specifies the type of the
+						elements of data it manages.
+						* It has a dimensionality which specifies the
+						dimensionality that the elements of data are represented
+						in.
+					</div>
+				</section>
+				<!--Slide 10-->
+				<section>
+					<div class="hbox" data-markdown>
+						#### Constructing a buffer
+					</div>
+					<div class="container">
+						<code class="code-100pc"><pre>
+auto buf = sycl::buffer{&var, sycl::range{1}};
+						</code></pre>
+					</div>
+					<div class="container" data-markdown>
+						* A `buffer` can be constructed from a pointer to data
+						for it to manage and a `range` which describes the
+						number of elements of data.
+						* Using CTAD the type and the dimensionality can be
+						inferred.
+					</div>
+				</section>
 				<!--Slide 11-->
 				<section>
-					<div class="container">
-						<div class="col" data-markdown>
-							* If a buffer is accessed on one device when the latest copy of the data is on another device, the data will be copied
-							* If the two devices are of the same context the data can be copied directly
-						</div>
-						<div class="col" data-markdown>
-							![Buffer Copied](../common-revealjs/images/buffer-copied.png "Buffer Copied")
-						</div>
+					<div class="hbox" data-markdown>
+						#### Accessor class
+					</div>
+					<div class="hbox" data-markdown>
+						![Accessor Types](../common-revealjs/images/accessor-types.png "Accessor Types")
 					</div>
 				</section>
 				<!--Slide 12-->
 				<section>
-					<div class="container">
-						<div class="col" data-markdown>
-							* If the devices are of different contexts the data must be copied via host memory
-							* It's important to consider this as it could incur further overhead when copying between devices
-						</div>
-						<div class="col" data-markdown>
-							![Buffer Copied](../common-revealjs/images/copy-via-host.png "Buffer Copied")
-						</div>
+					<div class="hbox" data-markdown>
+						#### Accessor class
+					</div>
+					<div class="container" data-markdown>
+						* There are many different ways to use the `accessor`
+						class.
+						  * Accessing data on a device.
+						  * Accessing data immediately in the host application.
+						  * Allocating local memory.
+						* For now we are going to focus on accessing data on a
+						device.
 					</div>
 				</section>
 				<!--Slide 13-->
 				<section>
 					<div class="hbox" data-markdown>
-						## Different Kinds of Accessors
+						#### Constructing an accessor
+					</div>
+					<div class="container">
+						<code class="code-100pc"><pre>
+auto acc = accessor&lt;float, 1, access::mode::read_write, access::target::global_buffer&gt;(buf, cgh);
+						</code></pre>
+					</div>
+					<div class="container" data-markdown>
+						* When creating an `accessor` you have to specify the various template parameters.
+						  * The element type should be the same as the `buffer`.
+						  * The dimensionality should be the same as the
+						  `buffer`.
+						  * The `access::mode` will specify how you wish to
+						  access the data.
+						  * The `access::target` should be `global_buffer`.
+						* When constructing an `accessor` you have to provide
+						  the `buffer` being accessed and the `handler` associated with he command group you are within.
 					</div>
 				</section>
 				<!--Slide 14-->
 				<section>
 					<div class="hbox" data-markdown>
-						![Accessor Types](../common-revealjs/images/accessor-types.png "Accessor Types")
+						#### get_access
+					</div>
+					<div class="container">
+						<code class="code-100pc"><pre>
+auto acc = buf.get_access&lt;access::mode::read_write&gt;(cgh);
+						</code></pre>
+					</div>
+					<div class="container" data-markdown>
+						* Alternatively the `buffer` class provides the
+						`get_access` member function as a shortcut.
+						  * This infers the element type and dimensionality
+						  from the `buffer` and assumes the `access::target` is
+						  `global_buffer`.
+						* You just need to specify the `access::mode` and
+						provide the `handler` as before.
 					</div>
 				</section>
 				<!--Slide 15-->
 				<section>
-					<div class="code-header" data-markdown>```accessor&ltelementT, dimensions, access::mode, access::target, access::placeholder&gt```</div>
-					<div class="container">
-						<div class="col" data-markdown>
-							* Accessors using the access::target **global_buffer** and **constant_buffer** will allocate memory on the device in the **global** and **constant** address space respectively
-							* Accessors of these access targets must be constructed using a buffer
-							* A useful shortcut to construct an accessor with the access::target **global_buffer** is to use the **get_access** member function of the buffer
-							* Element type and dimensionality must be the same
-						</div>
-						<div class="col" data-markdown>
-							![Buffer Accessors](../common-revealjs/images/buffer-accessors.png "Buffer Accessors")
-						</div>
+					<div class="hbox" data-markdown>
+						#### Access modes
 					</div>
-				</section>
-				<!--Slide 16-->
-				<section>
-					<div class="code-header" data-markdown>```accessor&ltelementT, dimensions, access::mode, access::target, access::placeholder&gt```</div>
 					<div class="container">
 						<div class="col" data-markdown>
-							* Accessors using the access::target **host_buffer** will make the data available immediately on the host
-							* This access targets must be constructed using a buffer outside of a command group
-							* A useful shortcut to construct an accessor with the access::target **host_buffer** is to use the **get_access** member function of the buffer
-							* Note that a host accessor will block other accessors until it’s destroyed
-						</div>
-						<div class="col" data-markdown>
-							![Buffer Accessors](../common-revealjs/images/buffer-accessors-get-access.png "Buffer Accessors")
-						</div>
-					</div>
-				</section>
-				<!--Slide 17-->
-				<section>
-					<div class="code-header" data-markdown>```accessor&ltelementT, dimensions, access::mode, access::target, access::placeholder&gt```</div>
-					<div class="container">
-						<div class="col" data-markdown>
-							* Accessors using the access::target **local** will allocate memory in the **local** address space per work-group
-							* This access targets does not require a buffer to be constructed as it’s temporary memory allocation for the duration of a SYCL kernel function invocation
-						</div>
-						<div class="col" data-markdown>
-							![Buffer Accessors](../common-revealjs/images/buffer-accessors-local.png "Buffer Accessors")
-						</div>
-					</div>
-				</section>
-				<!--Slide 18-->
-				<section>
-					<div class="container">
-						<div class="col" data-markdown>
-							* A **read** accessor instructs the SYCL runtime that the SYCL kernel function will read the data – cannot be written to within a SYCL kernel function
-							* A **write** accessor instructs the SYCL runtime that the SYCL kernel function will modify the data – creating a dependency for future command groups
-							* A **discard_*** accessor instructs the SYCL runtime that the SYCL kernel function does not need the initial values of the data – removing the dependency on previous command groups
+							* A **read** `accessor` instructs the SYCL runtime that the SYCL kernel function will read the data – cannot be written to within a SYCL kernel function.
+							* A **write** `accessor` instructs the SYCL runtime that the SYCL kernel function will modify the data – creating a dependency for future command groups.
+							* A **discard_*** `accessor` instructs the SYCL runtime that the SYCL kernel function does not need the initial values of the data – removing the dependency on previous command groups.
 						</div>
 						<div class="col" data-markdown>
 							![Buffer Accessors](../common-revealjs/images/accessors.png "Buffer Accessors")
 						</div>
 					</div>
 				</section>
-				<!--Slide 19-->
+				<!--Slide 16-->
 				<section>
 					<div class="hbox" data-markdown>
-						## Accessor Resolution
+						#### Access resolution
+					</div>
+					<div class="hbox" data-markdown>
+						* If a command group has accessors to the same buffer with conflicting access modes they are resolved into one:
+						  * read & write => ```read_write```.
+						  * ```read_write``` & ```discard_write``` => ```read_write```.
+						* Within the SYCL kernel function there are still multiple accessors, but they alias to the same memory address.
 					</div>
 				</section>
-				<!--Slide 20-->
+				<!--Slide 17-->
 				<section>
 					<div class="hbox" data-markdown>
-						* If a command group has accessors to the same buffer with conflicting access modes they are resolved into one 
-						  * read & write => ```read_write```
-						  * ```read_write``` & ```discard_write``` => ```read_write```
-						* Within the SYCL kernel function there are still multiple accessors, but they alias to the same memory address
+						#### Access resolution
 					</div>
-				</section>
-				<!--Slide 21-->
-				<section>
 					<div class="container">
 						<div class="col-left-3">
 							<code><pre>
-buffer&ltfloat, 1&gt bufI(dA.data(), range&lt1&gt(dA.size())); 
-buffer&ltfloat, 1&gt bufO(dO.data(), range&lt1&gt(dO.size()));
-
 gpuQueue.submit([&](handler &cgh){
-  auto inA = bufI.get_access&lt<mark>access::mode::read</mark>&gt(cgh);
-  auto inB = bufI.get_access&lt<mark>access::mode::write</mark>&gt(cgh);
-  auto out = bufO.get_access&ltaccess::mode::write&gt(cgh);
-  cgh.parallel_for&ltadd&gt(range&lt1&gt(dA.size()), 
-    [=](id&lt1&gt i){ out[i] = inA[i] + inB[i]; }); 
+  auto in = bufA.get_access&lt;<mark>access::mode::read</mark>&gt;(cgh);
+  auto out = bufO.get_access&lt;<mark>access::mode::write</mark>&gt;(cgh);
 });
 							</code></pre>
 						</div>
 						<div class="col-right-2" data-markdown>
-							* Here **inA** and **inB** both point to bufI but one is access::mode::read and one is access::mode::write
-							* So the SYCL runtime will treat them both as access::mode::read_write
-							* Both will point to a single allocation of global memory on the devices
-							* The runtime will resolve the data dependency into access::mode::read_write
+							* Here **in** and **out** both point to bufI but one is access::mode::read and one is access::mode::write.
+							* So the SYCL runtime will treat them both as `access::mode::read_write`.
+							* Both will point to a single allocation of global memory on the device(s).
+							* The runtime will resolve the data dependency into `access::mode::read_write`.
 						</div>
 					</div>
 				</section>
-				<!--Slide 22-->
+				<!--Slide 18-->
+				<section>
+					<div class="hbox" data-markdown>
+						#### operator[]
+					</div>
+					<div class="container">
+						<code class="code-100pc"><pre>
+gpuQueue.submit([&](handler &cgh){
+  auto inA = buf.get_access&ltaccess::mode::read&gt(cgh);
+  auto inB = buf.get_access&ltaccess::mode::read&gt(cgh);
+  auto inO = buf.get_access&ltaccess::mode::write&gt(cgh);
+  cgh.single_task&lt;add&gt;([=](){
+    <mark>out[0] = inA[0] + inB[0];</mark>
+  }); 
+});
+						</code></pre>
+					</div>
+					<div class="container" data-markdown>
+						* As well as specifying data dependencies an `accessor`
+						can also be used to access the data from within a kernel
+						function.
+						* You can do this by calling `operator[]` on the
+						`accessor`.
+						  * This operator can take an `id` or a `size_t`.
+					</div>
+				</section>
+				<!--Slide 19-->
 				<section>
 					<div class="hbox" data-markdown>
 						## Questions
 					</div>
 				</section>
-				<!--Slide 23-->
+				<!--Slide 20-->
 				<section>
 					<div class="hbox" data-markdown>
 						#### Exercise
@@ -314,7 +350,8 @@ gpuQueue.submit([&](handler &cgh){
 						Code_Exercises/Exercise_3_Scalar_Add/source
 					</div>
 					<div class="container" data-markdown>
-						Implement a SYCL application that performs an add.
+						Implement a SYCL application that adds two variables
+						and returns the result.
 					</div>
 				</section>
 			</div>

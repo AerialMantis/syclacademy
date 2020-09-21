@@ -67,6 +67,9 @@
                 </section>
 				<!--Slide 3-->
 				<section>
+					<div class="hbox" data-markdown>
+						#### What is SYCL?
+					</div>
 					<div class="container" data-markdown>
 						![SYCL](./sycl_and_cpp.png "SYCL")
 					</div>
@@ -79,6 +82,9 @@
 				</section>
 				<!--Slide 4-->
 				<section class="hbox">
+					<div class="hbox" data-markdown>
+						#### What is SYCL?
+					</div>
 					<div class="hbox" data-markdown>
 						SYCL is a **single source**, high-level, standard C++ programming model, that can target a range of heterogeneous platforms
 					</div>
@@ -99,9 +105,9 @@
 				</section>
 				<!--Slide 5-->
 				<section class="hbox">
-					<aside class="notes">
-						TBD
-					</aside>
+					<div class="hbox" data-markdown>
+						#### What is SYCL?
+					</div>
 					<div class="hbox" data-markdown>
 						SYCL is a single source, **high-level**, standard C++ programming model, that can target a range of heterogeneous platforms
 					</div>
@@ -112,8 +118,8 @@
 					<article class="main" data-markdown>
 						*  SYCL provides high-level abstractions over common boilerplate code 
 						  * Platform/device selection
-						  * Buffer creation
-						  * Kernel compilation
+						  * Buffer creation and data movement
+						  * Kernel function compilation
 						  * Dependency management and scheduling
 					</article>
 					<aside class="notes">
@@ -122,6 +128,9 @@
 				</section>
 				<!--Slide 6-->
 				<section class="hbox">
+					<div class="hbox" data-markdown>
+						#### What is SYCL?
+					</div>
 				    <div class="hbox" data-markdown>
 				        SYCL is a single source, high-level **standard C++** programming model, that can target a range of heterogeneous platforms
 					</div>
@@ -138,12 +147,15 @@
 						</div>
 					</div>
 					<aside class="notes">
-						SYCL only uses standard C++ code to contruct the code used to dispatch your work
-						As you can see other models use proprietary things like pragmas, attributes and language extensions
+						SYCL only uses standard C++ code for both the host applications and kernel functions
+						Other models use language extensions such as pragmas, attributes or keywords to indicate device code
 					</aside>
 				</section>
 				<!--Slide 7-->
 				<section class="hbox">
+					<div class="hbox" data-markdown>
+						#### What is SYCL?
+					</div>
 					<div class="hbox" data-markdown>
 						SYCL is a single source, high-level standard C++ programming model, that can **target a range of heterogeneous platforms**
 					</div>
@@ -155,7 +167,7 @@
 							* SYCL can target any device supported by its back-end
 							* SYCL can target a number of different backends
 							
-							While the current specification is limited to OpenCL, some implementations are already supporting other non-OpenCL back-ends.
+							While the current specification is limited to OpenCL, some implementations are already supporting other non-OpenCL back-ends
 						</div>
 					</div>
 					<aside class="notes">
@@ -165,17 +177,30 @@
 					</aside>
 				</section>
 				<!--Slide 8-->
-				<section data-markdown>
-					#### What SYCL implementations are available?
-					![SYCL Implementations](https://raw.githubusercontent.com/illuhad/hipSYCL/master/doc/img/sycl-targets.png "SYCL-Implementations")
-					Image referenced from the hipSYCL project (https://github.com/illuhad/hipSYCL)
+				<section class="hbox">
+					<div class="hbox" data-markdown>
+						#### SYCL specification
+					</div>
+					<div class="container">
+					<aside class="aside aside-1" data-markdown>
+						![SYCL](./sycl_spec_versions.png "SYCL-OpenCL")
+					</aside>
 				</section>
 				<!--Slide 9-->
-				<section data-markdown>
-					## What is in a SYCL Implementation?
+				<section class="hbox">
+					<div class="hbox" data-markdown>
+						#### SYCL implementations
+					</div>
+					<div class="container" data-markdown>
+						![SYCL Implementations](https://raw.githubusercontent.com/illuhad/hipSYCL/master/doc/img/sycl-targets.png "SYCL-Implementations")
+						Image referenced from the hipSYCL project (https://github.com/illuhad/hipSYCL)
+					</div>
 				</section>
 				<!--Slide 10-->
-				<section class="hbox">
+				<section>
+					<div class="hbox" data-markdown>
+						#### What a SYCL implementation looks like
+					</div>
 					<div class="container">
 						<div class="col" data-markdown>
 							![SYCL Implementation](./sycl_implementation_sycl_interface.png "SYCL-Implementation")
@@ -191,7 +216,10 @@
 					</div>
 				</section>
 				<!--Slide 11-->
-				<section class="hbox">
+				<section>
+					<div class="hbox" data-markdown>
+						#### What a SYCL implementation looks like
+					</div>
 					<div class="container">
 						<div class="col" data-markdown>
 							![SYCL Runtime](./sycl_implementation_sycl_runtime.png "SYCL-Host-Device")
@@ -202,7 +230,10 @@
 						</div>
 				</section>
 				<!--Slide 12-->
-				<section class="hbox">
+				<section>
+					<div class="hbox" data-markdown>
+						#### What a SYCL implementation looks like
+					</div>
 					<div class="container">
 						<div class="col" data-markdown>
 							![SYCL Host Device](./sycl_implementation_host_device.png "SYCL-Host-Device")
@@ -213,7 +244,10 @@
 						</div>
 				</section>
 				<!--Slide 13-->
-				<section class="hbox">
+				<section>
+					<div class="hbox" data-markdown>
+						#### What a SYCL implementation looks like
+					</div>
 					<div class="container">
 						<div class="col" data-markdown>
 							![SYCL Backend](./sycl_implementation_backend_interface.png "SYCL-Backend")
@@ -225,7 +259,10 @@
 					</div>
 				</section>
 				<!--Slide 14-->
-				<section class="hbox">
+				<section>
+					<div class="hbox" data-markdown>
+						#### What a SYCL implementation looks like
+					</div>
 					<div class="container">
 						<div class="col" data-markdown>
 							![SYCL Compiler](./sycl_implementation_sycl_compiler.png "SYCL-Compiler")
@@ -233,6 +270,8 @@
 						<div class="col" data-markdown>
 							* The SYCL device compiler is a C++ compiler which can identify SYCL kernels and compile them down to an IR or ISA
 							  * This can be SPIR, SPIR-V, GCN, PTX or any proprietary vendor ISA
+							* Some SYCL implementations are library only in
+							which case they do not require a device compiler
 						</div>
 					</div>
 					<div class="bottom-bullets" data-markdown>

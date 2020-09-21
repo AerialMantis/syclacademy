@@ -254,50 +254,29 @@ f4.yz() = sycl::float2{9.0f, 9.0f}; // f4 becomes {1.0f, 9.0f, 9.0f, 4.0f}
 				<!--Slide 14-->
 				<section>
 					<div class="hbox" data-markdown>
-						#### Vector loads and stores
-					</div>
-					<div class="container">
-						<code class="code-100pc"><pre>
-auto f4 = sycl::float4{};
-
-f4.load(0, f4Acc.get_pointer());
-
-f4.xyzw() = f4.wzyx();
-
-f4.store(0, f4Acc.get_pointer());
-						</code></pre>
-					</div>
-					<div class="container" data-markdown>
-						* The `vec` class also provides `load` and `store` member functions which perform aligned loads from and stores to global or local memory.
-						* This ensures that the compiler is able to map the the vector load and store instructions efficiently.
-						* These functions take a `global_ptr` which can be retrieved by calling `get_pointer` on an `accessor`.
-					</div>
-				</section>
-				<!--Slide 15-->
-				<section>
-					<div class="hbox" data-markdown>
 						#### Vectorized image convolution performance
 					</div>
 					<div class="container"data-markdown>
 						![SYCL](./image_convolution_performance_vectorized.png "SYCL")
 					</div>
 				</section>
-				<!--Slide 16-->
+				<!--Slide 15-->
 				<section>
 					<div class="hbox" data-markdown>
 						## Questions
 					</div>
 				</section>
-				<!--Slide 17-->
+				<!--Slide 16-->
 				<section>
 					<div class="hbox" data-markdown>
 						#### Exercise
 					</div>
 					<div class="container" data-markdown>
-						Code_Exercises/Exercise_17_Vector_Load_and_Store/source
+						Code_Exercises/Exercise_17_Vectors/source
 					</div>
 					<div class="container" data-markdown>
-						Update the image convolution application to load the pixel data into a `vec` and store it back at the end.
+						Update the image convolution application to use vectors
+						types.
 					</div>
 				</section>
 			</div>

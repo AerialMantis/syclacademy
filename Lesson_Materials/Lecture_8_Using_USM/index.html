@@ -155,11 +155,6 @@ event queue::fill(void* ptr, const T& pattern, size_t count);
 					</div>
 					<div class="container">
 						<code class="code-100pc"><pre>
-#define SYCL_LANGUAGE_VERSION 2020 
-#include "SYCL/sycl.hpp"
-
-class square;
-
 int square_number(int x){
 	
   auto myQueue = sycl::queue{};
@@ -168,9 +163,7 @@ int square_number(int x){
     cgh.single_task&lt;square_number&gt;([=](){
       /* square some number */
     });
-  });
-
-  myQueue.wait();
+  }).wait();
 
   return x;
 }
@@ -187,11 +180,6 @@ int square_number(int x){
 					</div>
 					<div class="container">
 						<code class="code-100pc"><pre>
-#define SYCL_LANGUAGE_VERSION 2020 
-#include "SYCL/sycl.hpp"
-
-class square;
-
 int square_number(int x){
 	
   auto myQueue = sycl::queue{<mark>usm_selector{}</mark>};
@@ -200,9 +188,7 @@ int square_number(int x){
     cgh.single_task&lt;square_number&gt;([=](){
       /* square some number */
     });
-  });
-
-  myQueue.wait();
+  }).wait();
 
   return x;
 }
@@ -219,11 +205,6 @@ int square_number(int x){
 					</div>
 					<div class="container">
 						<code class="code-100pc"><pre>
-#define SYCL_LANGUAGE_VERSION 2020 
-#include "SYCL/sycl.hpp"
-
-class square;
-
 int square_number(int x){
 	
   auto myQueue = sycl::queue{usm_selector{}};
@@ -234,9 +215,7 @@ int square_number(int x){
     cgh.single_task&lt;square_number&gt;([=](){
       /* square some number */
     });
-  });
-
-  myQueue.wait();
+  }).wait();
 
   return x;
 }
@@ -254,11 +233,6 @@ int square_number(int x){
 					</div>
 					<div class="container">
 						<code class="code-100pc"><pre>
-#define SYCL_LANGUAGE_VERSION 2020 
-#include "SYCL/sycl.hpp"
-
-class square;
-
 int square_number(int x){
 
   auto myQueue = sycl::queue{usm_selector{}};
@@ -271,9 +245,7 @@ int square_number(int x){
     cgh.single_task&lt;square&gt;([=](){
       /* square some number */
     });
-  });
-
-  myQueue.wait();
+  }).wait();
 
   return x;
 }
@@ -291,11 +263,6 @@ int square_number(int x){
 					</div>
 					<div class="container">
 						<code class="code-100pc"><pre>
-#define SYCL_LANGUAGE_VERSION 2020 
-#include "SYCL/sycl.hpp"
-
-class square;
-
 int square_number(int x){
 
   auto myQueue = sycl::queue{usm_selector{}};
@@ -308,9 +275,7 @@ int square_number(int x){
     cgh.single_task&lt;square&gt;([=](){
       <mark>*devicePtr = (*devicePtr) * (*devicePtr);</mark>
     });
-  });
-
-  myQueue.wait();
+  }).wait();
 
   return x;
 }
@@ -327,11 +292,6 @@ int square_number(int x){
 					</div>
 					<div class="container">
 						<code class="code-100pc"><pre>
-#define SYCL_LANGUAGE_VERSION 2020 
-#include "SYCL/sycl.hpp"
-
-class square;
-
 int square_number(int x){
 
   auto myQueue = sycl::queue{usm_selector{}};
@@ -344,9 +304,7 @@ int square_number(int x){
     cgh.single_task&lt;square&gt;([=](){
       *devicePtr = (*devicePtr) * (*devicePtr);
     });
-  });
-
-  myQueue.wait();
+  }).wait();
 
   <mark>myQueue.memcpy(&x, devicePtr, sizeof(int)).wait();</mark>
 
@@ -384,11 +342,6 @@ event queue::parallel_for(range<Dims> GlobalRange, const KernelType &KernelFunc)
 					</div>
 					<div class="container">
 						<code class="code-100pc"><pre>
-#define SYCL_LANGUAGE_VERSION 2020 
-#include "SYCL/sycl.hpp"
-
-class square;
-
 int square_number(int x){
 
   auto myQueue = sycl::queue{usm_selector{}};
@@ -399,9 +352,7 @@ int square_number(int x){
 
   <mark>myQueue.single_task&lt;square&gt;([=](){</mark>
     <mark>*devicePtr = (*devicePtr) * (*devicePtr);</mark>
-  <mark>});</mark>
-
-  myQueue.wait();
+  <mark>}).wait();</mark>
 
   myQueue.memcpy(&x, devicePtr, sizeof(int)).wait();
 
@@ -420,8 +371,12 @@ int square_number(int x){
 					</div>
 					<div class="container">
 						<code class="code-100pc"><pre>
+using namespace experimental {
+
 template &lt;typename T&gt;
 class usm_wrapper;
+
+}
 						</code></pre>
 					</div>
 					<div class="container" data-markdown>
@@ -438,24 +393,17 @@ class usm_wrapper;
 					</div>
 					<div class="container">
 						<code class="code-100pc"><pre>
-#define SYCL_LANGUAGE_VERSION 2020 
-#include "SYCL/sycl.hpp"
-
-class square;
-
 int square_number(int x){
 
   auto myQueue = sycl::queue{usm_selector{}};
 
-  auto devicePtr = <mark>usm_wrapper&lt;int&gt;(</mark>malloc_device&lt;int&gt;(1, myQueue)<mark>)</mark>;
+  auto devicePtr = <mark>experimental::usm_wrapper&lt;int&gt;(</mark>malloc_device&lt;int&gt;(1, myQueue)<mark>)</mark>;
 
   myQueue.memcpy(devicePtr, &x, sizeof(int)).wait();
 
   myQueue.single_task&lt;square&gt;([=](){
     *devicePtr = (*devicePtr) * (*devicePtr);
-  });
-
-  myQueue.wait();
+  }).wait();
 
   myQueue.memcpy(&x, devicePtr, sizeof(int)).wait();
 

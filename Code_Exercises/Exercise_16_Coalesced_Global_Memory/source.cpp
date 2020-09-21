@@ -11,6 +11,6 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch.hpp>
 
-TEST_CASE("coalesced_global_memory", "coalesced_global_memory_source") {
+TEST_CASE("image_convolution_coalesced", "coalesced_global_memory_source") {
   REQUIRE(true);
 }

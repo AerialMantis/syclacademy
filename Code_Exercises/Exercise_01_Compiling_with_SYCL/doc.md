@@ -4,13 +4,14 @@
 
 ---
 
-For this first exercise you will simply be installing ComputeCpp and verifying
-your installation.
+For this first exercise you simply need to install ComputeCpp and the SYCL
+Academy dependencies and then verify your installation by comping a source file
+for SYCL.
 
 ### 1.) Installing ComputeCpp
 
-To install ComputeCpp follow the instructions in the README.md for installing
-ComputeCpp and the necessary OpenCL drivers.
+To install ComputeCpp follow the instructions in the README.md of the SYCL
+Academy repository for installing ComputeCpp and the necessary OpenCL drivers.
 
 ### 2.) Verifying your environment
 
@@ -56,7 +57,7 @@ cd syclacademy
 mkdir build
 cd build
 
-cmake -DSYCL_ACADEMY_USE_COMPUTECPP=ON -DSYCL_ACADEMY_INSTALL_ROOT=/path/to/computecpp/root/dir/
+cmake ../ -G [generator] -A [arch] -DSYCL_ACADEMY_USE_COMPUTECPP=ON -DSYCL_ACADEMY_INSTALL_ROOT=/path/to/computecpp/root/dir/
 ```
 
 ### 4.) Include the SYCL header file
@@ -71,9 +72,6 @@ Once that is done build your source file with your chosen build system.
 
 ### 5.) Compile and run
 
-```
-make compiling_with_sycl_source
-./Code_Exercises/Exercise_1_Compiling_with_SYCL/compiling_with_sycl_source
-```
+Once you've done that simply build the exercise with your chosen build system
+and invoke the executable.
 
-If the source file compiles successfully then you have completed this first exercise.

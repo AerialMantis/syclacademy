@@ -62,7 +62,6 @@
 					## Learning Objectives
 					* Learn about ways to use initial data and pinned memory
 					* Learn about uninitialized buffers and when to use them
-					* Learn about moving data between multiple devices
                 </section>
 				<!--Slide 3-->
 				<section>
@@ -287,37 +286,10 @@ buf.set_final_data()
 				<!--Slide 17-->
 				<section>
 					<div class="hbox" data-markdown>
-						#### Moving between devices (buffer/accessor)
-					</div>
-					<div class="container" data-markdown>
-						* Often in heterogeneous applications it's necessary to move data from one device to another.
-						* In the USM model this is done explicit via `memcpy` as we've seen before.
-						* In the buffer/accessor model this is done automatically based on dependency analysis.
-					</div>
-				</section>
-				<!--Slide 18-->
-				<section>
-					<div class="hbox" data-markdown>
-						#### Moving between devices (buffer/accessor)
-					</div>
-					<div class="container">
-						<div class="col" data-markdown>
-							![SYCL](./moving_data_between_devices.png "SYCL")
-						</div>
-						<div class="col" data-markdown>
-							* If a `buffer` is accessed by kernel functions in two different devices commands are enqueued to automatically move the data to the devices it is being accessed on.
-							* If both of those devices are associated with the same context (i.e. same vendor) then the copy is direct.
-							* Otherwise the copy will generally go via the host and has additional overhead.
-						</div>
-					</div>
-				</section>
-				<!--Slide 19-->
-				<section>
-					<div class="hbox" data-markdown>
 						## Questions
 					</div>
 				</section>
-				<!--Slide 20-->
+				<!--Slide 18-->
 				<section>
 					<div class="hbox" data-markdown>
 						#### Exercise
@@ -327,9 +299,6 @@ buf.set_final_data()
 					</div>
 					<div class="container" data-markdown>
 						Write a SYCL application which uses uninitialized `buffer`s and disabling write back.
-					</div>
-					<div class="container" data-markdown>
-						Write a SYCL application that moves data between two devices.
 					</div>
 				</section>
 			</div>

@@ -8,5 +8,5 @@
   see <http://creativecommons.org/licenses/by-sa/4.0/>.
 ]]
 
-add_sycl_executable(exercise_17_vector_load_and_store source)
-add_sycl_executable(exercise_17_vector_load_and_store solution)
+add_sycl_executable(exercise_17_vectors source)
+add_sycl_executable(exercise_17_vectors solution)

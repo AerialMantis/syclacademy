@@ -20,7 +20,7 @@ Once you have a `queue` you can now submit work to be executed on the device
 that `queue` is targeting and this is done via a command group.
 
 Define a lambda expression which takes a reference to a `handler` to represent
-your command group function and pass it to the submit member function of the
+your command group function and pass it to the `submit` member function of the
 `queue`.
 
 Note that submitting a command group without any commands will result in an
