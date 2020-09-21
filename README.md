@@ -55,23 +55,6 @@ matter.
 Each of the lessons are designed to be self contained modules in order to
 support both academic and training style teaching environments.
 
-| Lesson | Title | Slides | Video | Exercise | Source | Solution | ComputeCpp | DPC++ | hipSYCL |
-|--------|-------|--------|----------|--------|----------|------------|-------|---------|---------|
-| 1 | Introduction to SYCL | [slides][lesson-1-slides] | [video][lesson-1-video] | [exercise][lesson-1-exercise] | NA | NA | Yes | Yes | Yes |
-| 2 | SYCL Topology Discover & Queue Creation | [slides][lesson-2-slides] | [video][lesson-2-video] | [exercise][lesson-2-exercise] | [source][lesson-2-source] | [solution][lesson-2-solution] | Yes | Yes | Yes |
-| 3 | SYCL Kernel Functions | [slides][lesson-3-slides] | [video][lesson-3-video] | [exercise][lesson-3-exercise] | [source][lesson-3-source] | [solution][lesson-3-solution] | Yes | Yes | Yes |
-| 4 | Managing Data in SYCL | [slides][lesson-4-slides] | [video][lesson-4-video] | [exercise][lesson-4-exercise] | [source][lesson-4-source] | [solution][lesson-4-solution] | Yes | Yes | Yes |
-| 5 | Data Dependencies in SYCL | [slides][lesson-5-slides] | NA | NA | NA | NA | NA | NA | NA |
-| 6 | Handling SYCL Errors | [slides][lesson-6-slides] | [video][lesson-6-video] | [exercise][lesson-6-exercise] | [source][lesson-6-source] | [solution][lesson-6-solution] | Yes | Yes | Yes |
-
-Additional Exercises
-
-| Exercise | Title | Exercise | Source | Solution | ComputeCpp | DPC++ | hipSYCL |
-|--------|-------|--------|----------|--------|----------|------------|-------|
-| 1 | Image Grayscale | [exercise][additional-exercises-1] | [source][additional-exercises-1-source] | [solution][additional-exercises-1-solution] | Yes | Yes | Yes |
-| 2 | Matrix Transpose |[exercise][additional-exercises-2] | [source][additional-exercises-2-source] | [solution][additional-exercises-2-solution] | Yes | Yes | Yes |
-| 3 | Unified Shared Memory Extension (Optional) | [exercise][additional-exercises-3] | [source][additional-exercises-3-source] | [solution][additional-exercises-3-solution] | Yes | Yes | No |
-
 ## Building the Exercises
 
 The exercises can be built for ComputeCpp CE, DPC++ and hipSYCL.
@@ -86,7 +69,7 @@ all of the exercises.
 
 | Implementation | Supported Platforms | Supported Devices | Required Version |
 |----------------|---------------------|-------------------|------------------|
-| ComputeCpp | Windows 10 Visual Studio 2019 (64bit) <br> Ubtuntu 18.04 (64bit) | Intel CPU (OpenCL) <br> Intel GPU (OpenCL) | CE 2.0.0 |
+| ComputeCpp | Windows 10 Visual Studio 2019 (64bit) <br> Ubtuntu 18.04 (64bit) | Intel CPU (OpenCL) <br> Intel GPU (OpenCL) | CE 2.2.0 |
 | DPC++ | Intel DevCloud <br> Windows 10 Visual Studio 2019 (64bit) <br> Ubtuntu 18.04 (64bit) | Intel CPU (OpenCL) <br> Intel GPU (OpenCL) <br> Intel FPGA (OpenCL) <br> Nvidia GPU (CUDA) | 2021.1-beta05	|
 | hipSYCL | Any Linux | CPU (OpenMP) <br> AMD GPU (ROCm)* <br> Nvidia GPU (CUDA) | Latest master |
 
@@ -229,62 +212,6 @@ ComputeCpp, a SYCL v1.2.1 conformant implementation by Codeplay Software provide
 
 Other SYCL implementations can be found on the SYCL community website [sycl.tech](https://sycl.tech).
 
-#### Setting up a Docker Container for Lab Machines
-
-In order to more easily deploy a SYCL implementation onto a bank of machines in a university lab for example, a Docker container can be used to deploy on these machines. This ensures all the dependencies that are needed are installed on each machine.
-
-An example of how to set up a Docker container:
-
-For Intel CPU or GPU
-* Download the OpenCL Drivers for Intel from the [Intel website](https://software.intel.com/en-us/articles/opencl-drivers)
-* Download the latest ComputeCpp release package from [developer.codeplay.com](https://developer.codeplay.com)
-
-Now create a DockerFile that uses these packages, an example of how this might be done is below. Please note this file is not tested or maintained regularly but shows the elements that need to be installed.
-
-```
-FROM ubuntu:18.04
-
-RUN apt-get update
-RUN apt-get install -y git
-RUN apt-get install -y ninja-build
-RUN apt-get install -y g++
-RUN apt-get install -y python3
-RUN apt-get install -y python3-pip
-RUN apt-get install -y software-properties-common
-
-RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test
-RUN apt-get update
-
-RUN python3 -m pip install cmake
-
-# install Intel OpenCL drivers from downloaded package
-RUN tar -xvf l_opencl_p_18.1.0.015.tgz
-RUN cd l_opencl_p_18.1.0.015
-RUN chmod +x install.sh
-RUN ./install.sh
-
-# Download the Khronos OpenCL headers
-RUN git clone https://github.com/KhronosGroup/OpenCL-Headers.git
-RUN mv OpenCL-Headers/CL/ /opt/khronos/opencl/include
-
-# Set up the ICD Loader
-RUN mkdir -p /etc/OpenCL/vendors/ \
-    && echo "$OCL_LIB/libintelocl.so" > /etc/OpenCL/vendors/intel.icd
-
-# Create a directory for ComputeCpp
-RUN mkdir /usr/local/computecpp
-RUN cd /usr/local/computecpp
-
-# Copy the ComputeCpp release package and extract it to /usr/local/computecpp
-RUN cp Ubuntu-16.04-64bit.tar.gz . 
-RUN tar -xvf Ubuntu-16.04-64bit.tar.gz
-
-# Add the ComputeCpp location to the path on the machine
-ENV PATH=OCL_INC:OCL_LIB:/usr/local/computecpp/bin:/usr/local/computecpp/include:/usr/local/computecpp/lib:${PATH}
-
-ENV CC=gcc-8
-ENV CXX=g++-8
-```
 
 SYCL and the SYCL logo are trademarks of the Khronos Group Inc.
 
