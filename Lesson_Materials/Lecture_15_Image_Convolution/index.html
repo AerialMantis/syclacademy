@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html>
 	<head>
@@ -62,7 +62,7 @@
 					## Learning Objectives
 					* Learn about image convolutions and what makes them a good problem for solving on a GPU
 					* Learn what a naive image convolution may look like
-                </section>
+				</section>
 				<!--Slide 3-->
 				<section>
 					<div class="hbox" data-markdown>
@@ -75,8 +75,8 @@
 						* A good problem to solve on a GPU.
 						* Can take advantage of a number of common optimizations.
 						* Convolution is a very powerful algorithm with many applications.
-						  * Deep neural networks.
-						  * Image processing.
+						* Deep neural networks.
+						* Image processing.
 					</div>
 				</section>
 				<!--Slide 3-->
@@ -86,11 +86,11 @@
 					</div>
 					<div class="container" data-markdown>
 						* The algorithm is **embarrassingly parallel**.
-						  * Each work-item in the computation can be calculated entirely independently.
+						* Each work-item in the computation can be calculated entirely independently.
 						* The algorithm is computation heavy.
-						  * A large number of operations are performed for each work-item in the computation, particularly when using large filters.
+						* A large number of operations are performed for each work-item in the computation, particularly when using large filters.
 						* The algorithm requires a large bandwidth.
-						  * A lot of data must be passed through the GPU to process an image, particularly if the image is very high resolution.
+						* A lot of data must be passed through the GPU to process an image, particularly if the image is very high resolution.
 					</div>
 				</section>
 				<!--Slide 4-->
@@ -161,37 +161,85 @@
 				<!--Slide 9-->
 				<section>
 					<div class="hbox" data-markdown>
-						#### Implementation
+						#### Reference image
 					</div>
-					<div class="container">
-						TODO: insert code here once done
+					<div class="col" data-markdown>
+						![SYCL](./dogs.png "SYCL")
+					</div>
+					<div class="container" data-markdown>
+						* We provide a reference image to use in the exercise.
+						* This is in Code_Exercises/Images
+						* This image is a 512x512 RGBA png.
+						* Feel free to use your own image but we recommend
+						keeping to this format.
 					</div>
 				</section>
 				<!--Slide 10-->
 				<section>
 					<div class="hbox" data-markdown>
-						#### Naive image convolution performance
+						#### Input/output image locations
 					</div>
-					<div class="container"data-markdown>
-						![SYCL](./image_convolution_performance.png "SYCL")
+					<div class="container">
+						<code>
+							<pre>
+const char* inputImageFile = "../Code_Exercises/Images/dogs.png";
+const char* outputImageFile = ../Code_Exercises/Images/blurred_dogs.png";
+						</code></pre>
+					</div>
+					<div class="container" data-markdown>
+						* The reference code and the solutions to the remaining
+						exercises use these strings to refernce the location of
+						the input and output image.
+						* Before compiling these you will have to update this to
+						point to the image in the development environment.
 					</div>
 				</section>
 				<!--Slide 11-->
 				<section>
 					<div class="hbox" data-markdown>
-						## Questions
+						#### Convolution filters
+					</div>
+					<div class="container">
+						<code>
+							<pre>
+auto filter = util::generate_filter(util::filter_type filterType, int width);
+						</code></pre>
+					</div>
+					<div class="container" data-markdown>
+						* The utility for generating the filter data takes a
+						`filter_type` enum which can be either `identity` or
+						`blur` and a width.
+						* Feel free to experiment with different variations.
+						* Note that the filter width should always be an odd
+						value.
 					</div>
 				</section>
 				<!--Slide 12-->
 				<section>
 					<div class="hbox" data-markdown>
+						#### Naive image convolution performance
+					</div>
+					<div class="container" data-markdown>
+						![SYCL](./image_convolution_performance.png "SYCL")
+					</div>
+				</section>
+				<!--Slide 13-->
+				<section>
+					<div class="hbox" data-markdown>
+						## Questions
+					</div>
+				</section>
+				<!--Slide 14-->
+				<section>
+					<div class="hbox" data-markdown>
 						#### Exercise
 					</div>
 					<div class="container" data-markdown>
-						Code_Exercises/Exercise_15_Image_Convolution/source
+						Code_Exercises/Exercise_15_Image_Convolution/reference
 					</div>
 					<div class="container" data-markdown>
-						Take a look at the naive image convolution code provided and familiarize yourself with it.
+						Take a look at the naive image convolution code provided
+						and familiarize yourself with it.
 					</div>
 				</section>
 			</div>

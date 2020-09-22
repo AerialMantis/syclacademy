@@ -31,16 +31,25 @@ The source also contains a call to a benchmarking utility that will print the
 time taken to execute the SYCL code, the SYCL code should go inside the lambda
 that is passed to the `benchmark` function.
 
-Though note that the benchmark facility provided measures who application time
-which is less accurate than measuring the actual kernel times alone.
+Though note that the benchmark facility provided measures whole application time
+which is less accurate than measuring the kernel execution times alone.
 
 Try running the application and recording the benchmark result timing you see so
 you can compare this with results in later exercises.
+
+Note if you are running on the host device the default iterations for the
+benchmark of 100 will take a while to execute so try reducing this number.
 
 ### 4.) Dimensionality
 
 The reference code uses a 2-dimensional `range` in `parallel_for` as this often
 simplifies the code when working with images.
+
+### 5.) Convolution filters
+
+The image convolution support code provides a `filter_type` enum which allows
+you to choose between `identity` and `blur`. The utility for generating the
+filter data; `generate_filter` takes a `filter_type` and a width.
 
 ## Build and execution hints
 

@@ -195,7 +195,7 @@
 					<div class="container" data-markdown>
 						* Coalescing global memory access.
 						* Using local memory.
-						* Using aligned vector loads/stores.
+						* Explicit vectorization.
 					</div>
 				</section>
 				<!--Slide 14-->
@@ -215,11 +215,17 @@
 				<!--Slide 15-->
 				<section>
 					<div class="hbox" data-markdown>
-						#### Double buffering (FIXME)
+						#### Double buffering
 					</div>
 					<div class="container" data-markdown>
-						* With particularly large data you can hit global memory limitations.
-						* In this case you need to execute the kernel function itself multiple times, each time operating on a tile of the input data.					
+						* With particularly large data you can hit global memory
+						limitations.
+						* When this happens you need to pipeline the work,
+						execute the kernel function itself multiple times,
+						each time operating on a tile of the input data.
+						* But copying to global memory can be very expensive.
+						* To maintain performance you need to hide the latency
+						of moving the data to the device.					
 					</div>
 				</section>
 				<!--Slide 16-->
@@ -231,8 +237,10 @@
 						![SYCL](./double_buffer_1.png "SYCL")
 					</div>
 					<div class="container" data-markdown>
-						* In this case you have multiple invocation of the kernel function.
-						* But between each invocation the data of the next tile must be moved to the GPU.
+						* So in this case you have multiple invocation of the
+						kernel function.
+						* And between each invocation the data of the next tile
+						must be moved to the GPU.
 					</div>
 				</section>
 				<!--Slide 17-->
@@ -244,7 +252,9 @@
 						![SYCL](./double_buffer_2.png "SYCL")
 					</div>
 					<div class="container" data-markdown>
-						* The cost of moving data to the GPU can be very high so this causes significant gaps where the GPU is idle.
+						* With the cost of moving data to the GPU being very
+						high so this causes significant gaps where the GPU is
+						idle.
 					</div>
 				</section>
 				<!--Slide 18-->
@@ -269,7 +279,9 @@
 					</div>
 					<div class="container" data-markdown>
 						* This allows overlapping of compute and data movement.
-						* This means that while one kernel invocation computes on a tile of data the data for the next tile is being moved.
+						* This means that while one kernel invocation computes
+						a tile of data the data for the next tile is being
+						moved.
 					</div>
 				</section>
 				<!--Slide 20-->

@@ -36,7 +36,7 @@ TEST_CASE("load_balancing", "load_balancing_solution") {
       }
     };
 
-    auto cpuDevice = sycl::gpu_selector_v.select_device();
+    auto cpuDevice = sycl::cpu_selector_v.select_device();
     auto gpuDevice = sycl::gpu_selector_v.select_device();
 
     auto jointContext = sycl::context({cpuDevice, gpuDevice});
