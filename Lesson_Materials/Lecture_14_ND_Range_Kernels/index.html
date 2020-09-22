@@ -59,20 +59,12 @@
 				<section class="hbox" data-markdown>
 					## Learning Objectives
 					* Learn about the SYCL execution and memory model
-					* Learn about work-items, work-groups and sub-groups
-					* Learn how to enqueue an nd-range kernel function
-				</section>
-				<!--Slide 2-->
-				<section class="hbox" data-markdown>
-					## TODO
-					* Add more detail about the uses for different parallel_for variants.
-					* Add more detail about the item, group and sub_group classes.
-					* Add description of sub-groups (execution model and API).
+					* Learn how to enqueue an nd-range kernel functions
 				</section>
 				<!--Slide 3-->
 				<section>
 					<div class="hbox" data-markdown>
-						## SYCL execution model
+						#### SYCL execution model
 					</div>
 					<div class="container">
 						<div class="col-left" data-markdown>
@@ -90,7 +82,7 @@
 				<!--Slide 4-->
 				<section>
 					<div class="hbox" data-markdown>
-						## SYCL execution model
+						#### SYCL execution model
 					</div>
 					<div class="container">
 						<div class="col" data-markdown>
@@ -106,7 +98,7 @@
 				<!--Slide 5-->
 				<section>
 					<div class="hbox" data-markdown>
-						## SYCL execution model
+						#### SYCL execution model
 					</div>
 					<div class="container">
 						<div class="col" data-markdown>
@@ -122,7 +114,7 @@
 				<!--Slide 6-->
 				<section>
 					<div class="hbox" data-markdown>
-						## SYCL execution model
+						#### SYCL execution model
 					</div>
 					<div class="container">
 						<div class="col" data-markdown>
@@ -140,7 +132,7 @@
 				<!--Slide 7-->
 				<section>
 					<div class="hbox" data-markdown>
-						## SYCL execution model
+						#### SYCL execution model
 					</div>
 					<div class="container">
 						<div class="col" data-markdown>
@@ -162,7 +154,7 @@
 				<!--Slide 8-->
 				<section>
 					<div class="hbox" data-markdown>
-						## SYCL execution model
+						#### SYCL execution model
 					</div>
 					<div class="container">
 						<div class="col" data-markdown>
@@ -176,7 +168,7 @@
 				<!--Slide 9-->
 				<section>
 					<div class="hbox" data-markdown>
-						## SYCL execution model
+						#### SYCL execution model
 					</div>
 					<div class="container">
 						<div class="col" data-markdown>
@@ -194,7 +186,7 @@
 				<!--Slide 10-->
 				<section>
 					<div class="hbox" data-markdown>
-						## SYCL execution model
+						#### SYCL execution model
 					</div>
 					<div class="container">
 						<div class="col" data-markdown>
@@ -209,7 +201,7 @@
 				<!--Slide 12-->
 				<section>
 					<div class="hbox" data-markdown>
-						## SYCL execution model
+						#### SYCL execution model
 					</div>
 					<div class="container">
 						<div class="col" data-markdown>
@@ -221,12 +213,11 @@
 						</div>
 					</div>
 				</section>
-				<!--Slide 13-->
-				<section class="hbox" data-markdown>
-				    ## The SYCL Memory Model
-				</section>
 				<!--Slide 14-->
 				<section>
+					<div class="hbox" data-markdown>
+						#### SYCL memory model
+					</div>
 					<div class="container">
 						<div class="col" data-markdown>
 							* Each work-item can access a dedicated region of **private memory**
@@ -240,6 +231,9 @@
 				</section>
 				<!--Slide 15-->
 				<section>
+					<div class="hbox" data-markdown>
+						#### SYCL memory model
+					</div>
 					<div class="container">
 						<div class="col-left-3" data-markdown>
 							![Local Memory](../common-revealjs/images/workitem-localmemory.png "Local Memory")
@@ -252,6 +246,9 @@
 				</section>
 				<!--Slide 16-->
 				<section>
+					<div class="hbox" data-markdown>
+						#### SYCL memory model
+					</div>
 					<div class="container">
 						<div class="col-left-3" data-markdown>
 							![Constant Memory](../common-revealjs/images/workitem-constantmemory.png "Constant Memory")
@@ -265,6 +262,9 @@
 				</section>
 				<!--Slide 17-->
 				<section>
+					<div class="hbox" data-markdown>
+						#### SYCL memory model
+					</div>
 					<div class="container">
 						<div class="col" data-markdown>
 							* Each memory region has a different size and access latency 
@@ -276,80 +276,33 @@
 						</div>
 					</div>
 				</section>
-				<!--Slide 18-->
-				<section>
-					<div class="hbox" data-markdown>
-						## Expressing parallelism
-					</div>
-					<div class="container">
-						<div class="col">
-							<code><pre>
-cgh.<mark>single_task</mark><T>([=](){
-  // SYCL kernel function is executed 
-  // once on a single work-item
-});
-							</code></pre>
-							<code><pre>
-cgh.<mark>parallel_for</mark><T>(range&lt2&gt(64, 64), 
-                          [=](id&lt2&gt idx){
-  // SYCL kernel function is executed 
-  // on an nd-range of work-items
-});
-							</code></pre>
-						</div>
-						<div class="col">
-							<code><pre>
-cgh.<mark>parallel_for_work_group</mark>(range&lt2&gt(64, 64), 
-                     [=](group&lt2&gt gp){
-  // SYCL kernel function is executed  
-  // once per work-group
-							</code></pre>
-							<code><pre>
-  <mark>parallel_for_work_item</mark>(gp, [=](h_item&lt2&gt it){
-    // SYCL kernel function is executed  
-    // once per work-item
-  });
-});
-							</code></pre>
-						</div>
-					</div>
-				</section>
 				<!--Slide 19-->
 				<section>
 					<div class="hbox" data-markdown>
-						## Expressing parallelism
+						#### Expressing parallelism
 					</div>
 					<div class="container">
 						<div class="col">
 							<code><pre>
 							
 cgh.parallel_for&ltkernel&gt(<mark>range&lt1&gt(1024)</mark>, 
-    [=](<mark>id&lt1&gt idx</mark>){
-
-  // kernel code
-
+  [=](<mark>id&lt1&gt idx</mark>){
+    /* kernel function code */
 });
-
 							</code></pre>
 							<code><pre>
 							
 cgh.parallel_for&ltkernel&gt(<mark>range&lt1&gt(1024)</mark>, 
-    [=](<mark>item&lt1&gt item</mark>){
-
-  // kernel code
-
+  [=](<mark>item&lt1&gt item</mark>){
+    /* kernel function code */
 });
-
 							</code></pre>
 							<code><pre>
 							
 cgh.parallel_for&ltkernel&gt(nd_range&lt1&gt(<mark>range&lt1&gt(1024), 
-    range&lt1&gt(32))</mark>,[=](<mark>nd_item&lt1&gt ndItem</mark>){
-
-  // kernel code
-
+  range&lt1&gt(32))</mark>,[=](<mark>nd_item&lt1&gt ndItem</mark>){
+    /* kernel function code */
 });
-
 							</code></pre>
 						</div>
 						<div class="col" data-markdown>
@@ -364,60 +317,11 @@ cgh.parallel_for&ltkernel&gt(nd_range&lt1&gt(<mark>range&lt1&gt(1024),
 						</div>
 					</div>
 				</section>
-				<!--Slide 20-->
-				<section>
-					<div class="hbox" data-markdown>
-						## Expressing parallelism
-					</div>
-					<div class="container">
-						<div class="col">
-							<code><pre>
-							
-cgh.parallel_for&ltkernel&gt(range&lt1&gt(1024), 
-    [=](<mark>id&lt1&gt(512)</mark>, id&lt1&gtidx){
-
-  // kernel code
-
-});
-
-							</code></pre>
-							<code><pre>
-							
-cgh.parallel_for&ltkernel&gt(range&lt1&gt(1024), 
-     <mark>id&lt1&gt(512)</mark>, [=](item&lt1&gt item){
-      
-  // kernel code
-
-});
-
-							</code></pre>
-							<code><pre>
-							
-cgh.parallel_for&ltkernel&gt(nd_range&lt1&gt(range&lt1&gt(1024), 
-    range&lt1&gt(32), <mark>id&lt1&gt(512)</mark>),
-    [=](nd_item&lt1&gt ndItem){
-
-  // kernel code
-
-});
-
-							</code></pre>
-						</div>
-						<div class="col" data-markdown>
-							* All overloads of **parallel_for** also allow you to optionally specify an offset
-							* The offset, if used, will increment each index into the global index by the specified value
-							  * E.g. with a range of 1024 and an offset of 512 the indexes would become (512, 1536)
-						</div>
-					</div>
-				</section>
-				<!--Slide 21-->
-				<section>
-					<div class="hbox" data-markdown>
-						## Using Data With Accessors
-					</div>
-				</section>
 				<!--Slide 22-->
 				<section>
+					<div class="hbox" data-markdown>
+						#### Accessing Data With Accessors
+					</div>
 					<div class="container" data-markdown>
 					* There are a few different ways to access the data represented by an accessor
 					  *  The subscript operator can take an **id**
@@ -431,6 +335,9 @@ cgh.parallel_for&ltkernel&gt(nd_range&lt1&gt(range&lt1&gt(1024),
 				</section>
 				<!--Slide 23-->
 				<section>
+					<div class="hbox" data-markdown>
+						#### Accessing Data With Accessors
+					</div>
 					<div class="container">
 						<div class="col-left-3">
 							<code><pre>
@@ -450,12 +357,17 @@ gpuQueue.submit([&](handler &cgh){
 							</code></pre>
 						</div>
 						<div class="col-right-2" data-markdown>
-							* Here we access the data of the accessor by passing in the id object passed to the SYCL kernel function
+							* Here we access the data of the `accessor` by
+							passing in the `id` passed to the SYCL kernel
+							function.
 						</div>
 					</div>
 				</section>
 				<!--Slide 24-->
 				<section>
+					<div class="hbox" data-markdown>
+						#### Accessing Data With Accessors
+					</div>
 					<div class="container">
 						<div class="col-left-3">
 							<code><pre>
@@ -479,9 +391,13 @@ gpuQueue.submit([&](handler &cgh){
 							</code></pre>
 						</div>
 						<div class="col-right-2" data-markdown>
-							* Here we retrieve the underlying pointer for each of the accessors
-							* We then access the pointer using the linearized id by calling the **get_linear_id** member function on the **item** class
-							* Again this linearization is calculated in row major
+							* Here we retrieve the underlying pointer for each
+							of the `accessor`s.
+							* We then access the pointer using the linearized
+							`id` by calling the `get_linear_id` member function
+							on the `item`.
+							* Again this linearization is calculated in
+							row-major order.
 						</div>
 					</div>
 				</section>
